@@ -1,20 +1,16 @@
 import pygame
 from pygame.locals import *
 
-from cell import Cell
+from grid import Grid
 
 
 
 pygame.init()
 screen = pygame.display.set_mode((1600, 900))
+screen.fill((48, 46, 46))
 
-cell1 = Cell(10, 10)
-cell2 = Cell(200, 200)
-
-screen.blit(cell1.image, (cell1.x, cell1.y))
-screen.blit(cell2.image, (cell2.x, cell2.y))
-
-
+grid = Grid(screen, 6, 6)
+grid.drawGrid()
 
 while 1:
     for event in pygame.event.get():
