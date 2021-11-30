@@ -6,6 +6,7 @@ class Grid:
     screen_size_x = 1600
     screen_size_y = 900
     cell_size = 100
+    item_size = 40
 
     grid = []
     items_grid = []
@@ -43,8 +44,8 @@ class Grid:
         return (x, y)
 
     def itemGridToScreenPos(self, i, j):
-        x = self.offset_x + i*self.cell_size + 13
-        y = self.offset_y + j*self.cell_size + 13
+        x = self.offset_x + i*self.cell_size + (self.cell_size-self.item_size)/2
+        y = self.offset_y + j*self.cell_size + (self.cell_size-self.item_size)/2
         return (x, y)
 
     def drawGrid(self):  
