@@ -1,26 +1,37 @@
 from cell import Cell
+from storage import Storage
 
 class Grid:
     screen_size_x = 1600
     screen_size_y = 900
-
     cell_size = 100
 
     cells = []
+    storages = []
 
-    def __init__(self, screen, x ,y) -> None:
+    grid = []
+
+    def __init__(self, screen, x, y) -> None:
         self.screen = screen
         self.x = x
         self.y = y
 
-        offset_x = int((self.screen_size_x - x*self.cell_size)/2)
-        offset_y = int((self.screen_size_y - y*self.cell_size)/2)
+        self.offset_x = int((self.screen_size_x - x*self.cell_size)/2)
+        self.offset_y = int((self.screen_size_y - y*self.cell_size)/2)
 
-        for i in range(offset_x, self.screen_size_x - offset_x, self.cell_size):
-            for j in range(offset_y, self.screen_size_y - offset_y, self.cell_size):
-                    cell = Cell(i, j)
-                    self.cells.append(cell)
+        for i in range(self.x):
+            tmp = []
+            for j in range(self.y):
+                tmp.append(Cell(i, j))
+            self.grid.append(tmp)
 
-    def drawGrid(self):        
-        for cell in self.cells:
-            self.screen.blit(cell.image, cell.pos)\
+    def gridToScreenPos(self, i, j):
+        x = self.offset_x + i*self.cell_size
+        y = self.offset_y + j*self.cell_size
+
+        return (x, y)
+
+    def drawGrid(self):  
+        for row in self.grid:
+            for obj in row:
+                self.screen.blit(obj.image, self.gridToScreenPos(obj.i, obj.j))
