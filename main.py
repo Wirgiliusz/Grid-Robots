@@ -5,7 +5,6 @@ from pygame.locals import *
 from grid import Grid
 
 
-
 pygame.init()
 screen = pygame.display.set_mode((1600, 900))
 screen.fill((48, 46, 46))

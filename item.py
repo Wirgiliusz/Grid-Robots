@@ -1,5 +1,5 @@
 import pygame
-from random import randint, random
+from random import randint
 
 class Item:
     def __init__(self, i, j) -> None:
