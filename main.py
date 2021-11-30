@@ -10,7 +10,7 @@ pygame.init()
 screen = pygame.display.set_mode((1600, 900))
 screen.fill((48, 46, 46))
 
-grid = Grid(screen, 6, 6)
+grid = Grid(screen, 6, 6, ((0,0), (5,5), (3,2)))
 grid.drawGrid()
 
 while 1:

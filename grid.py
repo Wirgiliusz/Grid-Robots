@@ -6,12 +6,9 @@ class Grid:
     screen_size_y = 900
     cell_size = 100
 
-    cells = []
-    storages = []
-
     grid = []
 
-    def __init__(self, screen, x, y) -> None:
+    def __init__(self, screen, x, y, storages_coordinates) -> None:
         self.screen = screen
         self.x = x
         self.y = y
@@ -24,6 +21,11 @@ class Grid:
             for j in range(self.y):
                 tmp.append(Cell(i, j))
             self.grid.append(tmp)
+
+        for coord in storages_coordinates:
+            i = coord[0]
+            j = coord[1]
+            self.grid[i][j] = Storage(i, j)
 
     def gridToScreenPos(self, i, j):
         x = self.offset_x + i*self.cell_size
