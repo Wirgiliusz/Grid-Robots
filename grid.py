@@ -1,6 +1,7 @@
 from cell import Cell
 from storage import Storage
 from item import Item
+from robot import Robot
 
 class Grid:
     screen_size_x = 1600
@@ -10,8 +11,12 @@ class Grid:
 
     grid = []
     items_grid = []
+    robots_grid = []
 
-    def __init__(self, screen, x, y, storages_coordinates, items_coordinates) -> None:
+    def __init__(self, screen, x, y, 
+    storages_coordinates, 
+    items_coordinates, 
+    robot_coordinates) -> None:
         self.screen = screen
         self.x = x
         self.y = y
@@ -22,11 +27,14 @@ class Grid:
         for i in range(self.x):
             tmp = []
             tmp_item = []
+            tmp_robot = []
             for j in range(self.y):
                 tmp.append(Cell(i, j))
                 tmp_item.append(0)
+                tmp_robot.append(0)
             self.grid.append(tmp)
             self.items_grid.append(tmp_item)
+            self.robots_grid.append(tmp_robot)
 
         for coord in storages_coordinates:
             i = coord[0]
@@ -37,6 +45,11 @@ class Grid:
             i = coord[0]
             j = coord[1]
             self.items_grid[i][j] = Item(i, j)
+
+        for coord in robot_coordinates:
+            i = coord[0]
+            j = coord[1]
+            self.robots_grid[i][j] = Robot(i, j)
 
     def gridToScreenPos(self, i, j):
         x = self.offset_x + i*self.cell_size
@@ -53,10 +66,18 @@ class Grid:
             for obj in row:
                 self.screen.blit(obj.image, self.gridToScreenPos(obj.i, obj.j))
         self.drawItems()
+        self.drawRobots()
 
     def drawItems(self):
         for row in self.items_grid:
             for item in row:
                 if item:
                     self.screen.blit(item.image, self.itemGridToScreenPos(item.i, item.j))
+
+    def drawRobots(self):
+        for row in self.robots_grid:
+            for robot in row:
+                if robot:
+                    self.screen.blit(robot.image, self.gridToScreenPos(robot.i, robot.j))
+
         
