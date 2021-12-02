@@ -4,7 +4,6 @@ from pygame.locals import *
 
 from grid import Grid
 
-
 pygame.init()
 screen = pygame.display.set_mode((1600, 900))
 screen.fill((48, 46, 46))
@@ -12,7 +11,7 @@ screen.fill((48, 46, 46))
 grid = Grid(screen, 6, 6, 
 ((1,5), (3,5), (5,5)), 
 ((2,3), (4,4)),
-((0,0), (2,0)))
+((0,0), ))
 grid.drawGrid()
 
 while True:
@@ -22,7 +21,19 @@ while True:
         elif event.type == KEYDOWN:
             if event.key == pygame.K_w:
                 print("W pressed")
-                grid.updateRobotsPositions()
+                grid.moveRobot("N")
+            if event.key == pygame.K_s:
+                print("S pressed")
+                grid.moveRobot("S")
+            if event.key == pygame.K_a:
+                print("A pressed")
+                grid.moveRobot("W")
+            if event.key == pygame.K_d:
+                print("D pressed")
+                grid.moveRobot("E")
+
+    if grid.play_animations:
+        grid.updateRobotsPositions()
 
 
     pygame.display.update()

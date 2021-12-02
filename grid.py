@@ -13,6 +13,8 @@ class Grid:
     items_grid = []
     robots_grid = []
 
+    play_animations = False
+
     def __init__(self, screen, x, y, 
     storages_coordinates, 
     items_coordinates, 
@@ -81,8 +83,29 @@ class Grid:
                     self.screen.blit(robot.image, self.gridToScreenPos(robot.i, robot.j))
 
     def updateRobotsPositions(self):
+        played_animation = False
         for row in self.robots_grid:
             for robot in row:
                 if robot:
-                    robot.moveToCoord(4, 4)
+                    if robot.movement:
+                        robot.playAnimation()
+                        played_animation = True
         self.drawGrid()
+        if not played_animation:
+            self.play_animations = False
+
+
+    def moveRobot(self, dir):
+        for row in self.robots_grid:
+            for robot in row:
+                if robot:
+                    if not robot.movement:
+                        if dir == "N":
+                            robot.moveToCoord(robot.i, robot.j-1)
+                        elif dir == "S":
+                            robot.moveToCoord(robot.i, robot.j+1)
+                        elif dir == "W":
+                            robot.moveToCoord(robot.i-1, robot.j)
+                        elif dir == "E":
+                            robot.moveToCoord(robot.i+1, robot.j+1)
+        self.play_animations = True
