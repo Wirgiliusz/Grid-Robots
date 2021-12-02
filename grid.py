@@ -80,4 +80,9 @@ class Grid:
                 if robot:
                     self.screen.blit(robot.image, self.gridToScreenPos(robot.i, robot.j))
 
-        
+    def updateRobotsPositions(self):
+        for row in self.robots_grid:
+            for robot in row:
+                if robot:
+                    robot.moveToCoord(4, 4)
+        self.drawGrid()

@@ -15,10 +15,15 @@ grid = Grid(screen, 6, 6,
 ((0,0), (2,0)))
 grid.drawGrid()
 
-while 1:
+while True:
     for event in pygame.event.get():
-        if event.type in (QUIT, KEYDOWN):
+        if event.type == QUIT:
             sys.exit()
+        elif event.type == KEYDOWN:
+            if event.key == pygame.K_w:
+                print("W pressed")
+                grid.updateRobotsPositions()
+
 
     pygame.display.update()
     pygame.time.delay(100)
