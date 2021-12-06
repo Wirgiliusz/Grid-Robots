@@ -25,5 +25,24 @@ int main() {
     grid_size_j = atoi(token);
 
 
+    char **grid = malloc(sizeof(char*)*grid_size_j);
+    for (size_t i=0; i<grid_size_i; i++) {
+        char *row = malloc(sizeof(char)*grid_size_i);
+        grid[i] = row;
+    }
+
+    for (size_t i=0; i<grid_size_i; i++) {
+        for (size_t j=0; j<grid_size_j; j++) {
+            grid[i][j] = '_';
+        }
+    }
+
+    for (size_t j=0; j<grid_size_j; j++) {
+        for (size_t i=0; i<grid_size_i; i++) {
+            printf("%c ", grid[i][j]);
+        }
+        printf("\n");
+    }
+
     return EXIT_SUCCESS;
 }
