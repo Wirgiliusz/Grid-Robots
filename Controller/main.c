@@ -43,6 +43,9 @@ int main() {
     token = strtok(input_line, " ");
     while (token) {
         token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
         x = atoi(token);
         token = strtok(NULL, " ");
         y = atoi(token);
@@ -54,6 +57,10 @@ int main() {
     token = strtok(input_line, " ");
     while (token) {
         token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
+
         x = atoi(token);
         token = strtok(NULL, " ");
         y = atoi(token);
@@ -66,6 +73,10 @@ int main() {
     token = strtok(input_line, " ");
     while (token) {
         token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
+
         x = atoi(token);
         token = strtok(NULL, " ");
         y = atoi(token);
