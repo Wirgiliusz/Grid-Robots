@@ -37,6 +37,44 @@ int main() {
         }
     }
 
+    size_t x;
+    size_t y;
+    fgets(input_line, INPUT_BUFFER_SIZE, file);
+    token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        grid[x][y] = 'S';
+    }
+
+    fgets(input_line, INPUT_BUFFER_SIZE, file);
+    token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        grid[x][y] = 'I';
+    }
+
+    int robot_number = 0;
+    fgets(input_line, INPUT_BUFFER_SIZE, file);
+    token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        grid[x][y] = robot_number + '0';
+        robot_number++;
+    }
+
+
     for (size_t j=0; j<grid_size_j; j++) {
         for (size_t i=0; i<grid_size_i; i++) {
             printf("%c ", grid[i][j]);
