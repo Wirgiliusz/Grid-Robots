@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define INPUT_BUFFER_SIZE 1024
 
@@ -33,6 +37,20 @@ int main() {
 
     printGrid(grid, grid_size_i, grid_size_j);
 
+
+    int fd_input;
+    int fd_output;
+    const char *fifo_input_path = "/tmp/myfifo_p2c";
+    const char *fifo_output_path = "/tmp/myfifo_c2p";
+    mkfifo(fifo_input_path, 0666);
+    mkfifo(fifo_output_path, 0666);
+
+    // fd_input = open(fifo_input_path, O_RDONLY);
+    fd_output = open(fifo_output_path, O_WRONLY);
+
+    char message[] = "test message\n";
+    write(fd_output, message, strlen(message)+1);
+    close(fd_output);
 
     return EXIT_SUCCESS;
 }

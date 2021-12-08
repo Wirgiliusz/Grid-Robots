@@ -1,6 +1,7 @@
 import pygame
-import sys
 from pygame.locals import *
+import sys
+import os
 
 from grid import Grid
 
@@ -14,6 +15,7 @@ grid = Grid(screen, 6, 6,
 ((0,0), ))
 grid.drawGrid()
 
+'''
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -38,3 +40,16 @@ while True:
 
     pygame.display.update()
     pygame.time.delay(100)
+'''
+
+fifo_input_path = "/tmp/myfifo_c2p"
+
+with open(fifo_input_path) as fifo_input:
+    print("FIFO opened")
+    while True:
+        data = fifo_input.read()
+        if len(data) == 0:
+            print("Writer closed")
+            break
+        print("Read: ", data)
+
