@@ -43,13 +43,10 @@ while True:
 '''
 
 fifo_input_path = "/tmp/myfifo_c2p"
-
-with open(fifo_input_path) as fifo_input:
-    print("FIFO opened")
-    while True:
-        data = fifo_input.read()
-        if len(data) == 0:
-            print("Writer closed")
-            break
-        print("Read: ", data)
+fifo_input = open(fifo_input_path, 'r')
+print("FIFO opened")    
+data = fifo_input.readline()
+print("Read: ", data)
+data = fifo_input.readline()
+print("Read: ", data)
 

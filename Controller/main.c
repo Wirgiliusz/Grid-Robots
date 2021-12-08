@@ -50,8 +50,12 @@ int main() {
 
     char message[] = "test message\n";
     write(fd_output, message, strlen(message)+1);
-    close(fd_output);
 
+    char message2[] = "test message 2\n";
+    write(fd_output, message2, strlen(message2)+1);
+
+
+    close(fd_output);
     return EXIT_SUCCESS;
 }
 
