@@ -50,3 +50,4 @@ print("Read: ", data)
 data = fifo_input.readline()
 print("Read: ", data)
 
+fifo_input.close()
