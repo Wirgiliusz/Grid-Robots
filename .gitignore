@@ -2,3 +2,4 @@
 /Simulator/__pycache__
 /.vscode
 /Controller/*.exe
+/Controller/*.out
