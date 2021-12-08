@@ -48,6 +48,10 @@ int main() {
     fd_output = open(fifo_output_path, O_WRONLY);
     printf("FIFO opened\n");
 
+    // TODO
+    // Change the hard coded messeges to the data read from file
+    // It is best to change implementation to struct based
+    // GridMenager with all parameters and grid
     const char msg_grid_size[] = "6 6\n";
     const char msg_storages_points[] = "1 5 3 5 5 5\n";
     const char msg_items_points[] = "2 3 4 4\n";
