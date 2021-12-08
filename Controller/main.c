@@ -38,24 +38,28 @@ int main() {
     printGrid(grid, grid_size_i, grid_size_j);
 
 
-    int fd_input;
+    //int fd_input;
     int fd_output;
-    const char *fifo_input_path = "/tmp/myfifo_p2c";
+    //const char *fifo_input_path = "/tmp/myfifo_p2c";
     const char *fifo_output_path = "/tmp/myfifo_c2p";
-    mkfifo(fifo_input_path, 0666);
+    //mkfifo(fifo_input_path, 0666);
     mkfifo(fifo_output_path, 0666);
-
     // fd_input = open(fifo_input_path, O_RDONLY);
     fd_output = open(fifo_output_path, O_WRONLY);
+    printf("FIFO opened\n");
 
-    char message[] = "test message\n";
-    write(fd_output, message, strlen(message)+1);
-
-    char message2[] = "test message 2\n";
-    write(fd_output, message2, strlen(message2)+1);
-
+    const char msg_grid_size[] = "6 6\n";
+    const char msg_storages_points[] = "1 5 3 5 5 5\n";
+    const char msg_items_points[] = "2 3 4 4\n";
+    const char msg_robots_points[] = "0 0\n";
+    write(fd_output, msg_grid_size, strlen(msg_grid_size));
+    write(fd_output, msg_storages_points, strlen(msg_storages_points));
+    write(fd_output, msg_items_points, strlen(msg_items_points));
+    write(fd_output, msg_robots_points, strlen(msg_robots_points));
 
     close(fd_output);
+    printf("FIFO closed\n");
+
     return EXIT_SUCCESS;
 }
 
