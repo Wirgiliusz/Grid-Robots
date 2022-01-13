@@ -39,3 +39,67 @@ void createEmptyGrid(struct GridManager *gm) {
 
     gm->grid = grid;
 }
+
+void readAndAddStorages(struct GridManager *gm) {
+    char input_line[INPUT_BUFFER_SIZE];
+    size_t x;
+    size_t y;
+
+    fgets(input_line, INPUT_BUFFER_SIZE, gm->file);
+    char *token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        gm->grid[x][y] = 'S';
+    }
+}
+
+void readAndAddItems(struct GridManager *gm) {
+    char input_line[INPUT_BUFFER_SIZE];
+    size_t x;
+    size_t y;
+
+    fgets(input_line, INPUT_BUFFER_SIZE, gm->file);
+    char *token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
+
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        gm->grid[x][y] = 'I';
+    }
+}
+
+void readAndAddRobots(struct GridManager *gm) {
+    char input_line[INPUT_BUFFER_SIZE];
+    size_t x;
+    size_t y;
+    int robot_number = 0;
+
+    fgets(input_line, INPUT_BUFFER_SIZE, gm->file);
+    char *token = strtok(input_line, " ");
+    while (token) {
+        token = strtok(NULL, " ");
+        if (!token) {
+            break;
+        }
+
+        x = atoi(token);
+        token = strtok(NULL, " ");
+        y = atoi(token);
+
+        gm->grid[x][y] = robot_number + '0';
+        robot_number++;
+    }
+}

@@ -9,11 +9,9 @@
 
 #define INPUT_BUFFER_SIZE 1024
 
-//void readGridDimensions(FILE *file, size_t *grid_size_i, size_t *grid_size_j);
-//char** createEmptyGrid(size_t grid_size_i, size_t grid_size_j);
-void readAndAddStorages(FILE *file, char **grid);
-void readAndAddItems(FILE *file, char **grid);
-void readAndAddRobots(FILE *file, char **grid);
+//void readAndAddStorages(FILE *file, char **grid);
+//void readAndAddItems(FILE *file, char **grid);
+//void readAndAddRobots(FILE *file, char **grid);
 void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j);
 
 
@@ -29,9 +27,9 @@ int main() {
     readGridDimensions(&gm);
 
 
-    readAndAddStorages(gm.file, gm.grid);
-    readAndAddItems(gm.file, gm.grid);
-    readAndAddRobots(gm.file, gm.grid);
+    readAndAddStorages(&gm);
+    readAndAddItems(&gm);
+    readAndAddRobots(&gm);
 
     printGrid(gm.grid, gm.grid_size_i, gm.grid_size_j);
 
@@ -65,7 +63,7 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-
+/*
 void readAndAddStorages(FILE *file, char **grid) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
@@ -85,7 +83,9 @@ void readAndAddStorages(FILE *file, char **grid) {
         grid[x][y] = 'S';
     }
 }
+*/
 
+/*
 void readAndAddItems(FILE *file, char **grid) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
@@ -106,7 +106,9 @@ void readAndAddItems(FILE *file, char **grid) {
         grid[x][y] = 'I';
     }
 }
+*/
 
+/*
 void readAndAddRobots(FILE *file, char **grid) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
@@ -129,6 +131,7 @@ void readAndAddRobots(FILE *file, char **grid) {
         robot_number++;
     }
 }
+*/
 
 void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j) {
     for (size_t j=0; j<grid_size_j; j++) {
