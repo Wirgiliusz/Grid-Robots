@@ -27,16 +27,15 @@ int main() {
     constructMessages(&gm);
 
 
-    //int fd_input;
+    int fd_input;
     int fd_output;
-    //const char *fifo_input_path = "/tmp/myfifo_p2c";
+    
     const char *fifo_output_path = "/tmp/myfifo_c2p";
-    //mkfifo(fifo_input_path, 0666);
     mkfifo(fifo_output_path, 0666);
-    // fd_input = open(fifo_input_path, O_RDONLY);
     fd_output = open(fifo_output_path, O_WRONLY);
+    
     printf("FIFO opened\n");
-    printf("Writing messages to fifo:\n");
+    printf("Writing messages to FIFO:\n");
 
     printf("Grid size msg: %s", gm.msg_grid_size);
     write(fd_output, gm.msg_grid_size, strlen(gm.msg_grid_size));
@@ -52,6 +51,15 @@ int main() {
 
     close(fd_output);
     printf("FIFO closed\n");
+
+    const char *fifo_input_path = "/tmp/myfifo_p2c";
+    mkfifo(fifo_input_path, 0666);
+    fd_input = open(fifo_input_path, O_RDONLY);
+
+    printf("Reading messages from FIFO:\n");
+    char buf[1024];
+    read(fd_input, &buf, 1024);
+    printf("Read msg: %s\n", buf);
 
     return EXIT_SUCCESS;
 }
