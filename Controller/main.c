@@ -9,8 +9,8 @@
 
 #define INPUT_BUFFER_SIZE 1024
 
-void readGridDimensions(FILE *file, size_t *grid_size_i, size_t *grid_size_j);
-char** createEmptyGrid(size_t grid_size_i, size_t grid_size_j);
+//void readGridDimensions(FILE *file, size_t *grid_size_i, size_t *grid_size_j);
+//char** createEmptyGrid(size_t grid_size_i, size_t grid_size_j);
 void readAndAddStorages(FILE *file, char **grid);
 void readAndAddItems(FILE *file, char **grid);
 void readAndAddRobots(FILE *file, char **grid);
@@ -20,27 +20,20 @@ void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j);
 int main() {
     printf("Hello Controller!\n");
 
-    /*
-    FILE *file;
-    file = fopen("input.txt", "r");
-    if (!file) {
+    struct GridManager gm;
+    if(!openFile(&gm, "input.txt")) {
         perror("File opening failed");
         return EXIT_FAILURE;
     }
-    */
-    struct GridManager gm;
-    openFile(&gm, "input.txt");
 
-    size_t grid_size_i = 0;
-    size_t grid_size_j = 0;
-    readGridDimensions(gm.file, &grid_size_i, &grid_size_j);
-    char **grid = createEmptyGrid(grid_size_i, grid_size_j);
+    readGridDimensions(&gm);
 
-    readAndAddStorages(gm.file, grid);
-    readAndAddItems(gm.file, grid);
-    readAndAddRobots(gm.file, grid);
 
-    printGrid(grid, grid_size_i, grid_size_j);
+    readAndAddStorages(gm.file, gm.grid);
+    readAndAddItems(gm.file, gm.grid);
+    readAndAddRobots(gm.file, gm.grid);
+
+    printGrid(gm.grid, gm.grid_size_i, gm.grid_size_j);
 
 
     //int fd_input;
@@ -72,31 +65,6 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-void readGridDimensions(FILE *file, size_t *grid_size_i, size_t *grid_size_j) {
-    char input_line[INPUT_BUFFER_SIZE];
-
-    fgets(input_line, INPUT_BUFFER_SIZE, file);
-    char *token = strtok(input_line, " ");
-    *grid_size_i = atoi(token);
-    token = strtok(NULL, " ");
-    *grid_size_j = atoi(token);
-}
-
-char** createEmptyGrid(size_t grid_size_i, size_t grid_size_j) {
-    char **grid = malloc(sizeof(char*)*grid_size_j);
-    for (size_t i=0; i<grid_size_i; i++) {
-        char *row = malloc(sizeof(char)*grid_size_i);
-        grid[i] = row;
-    }
-
-    for (size_t i=0; i<grid_size_i; i++) {
-        for (size_t j=0; j<grid_size_j; j++) {
-            grid[i][j] = '_';
-        }
-    }
-
-    return grid;
-}
 
 void readAndAddStorages(FILE *file, char **grid) {
     char input_line[INPUT_BUFFER_SIZE];
