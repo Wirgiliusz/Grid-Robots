@@ -21,4 +21,4 @@ void createEmptyGrid(struct GridManager *gm);
 void readAndAddStorages(struct GridManager *gm);
 void readAndAddItems(struct GridManager *gm);
 void readAndAddRobots(struct GridManager *gm);
-//void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j);
+void printGrid(struct GridManager *gm);

@@ -7,13 +7,6 @@
 #include <fcntl.h>
 #include "GridManager.h"
 
-#define INPUT_BUFFER_SIZE 1024
-
-//void readAndAddStorages(FILE *file, char **grid);
-//void readAndAddItems(FILE *file, char **grid);
-//void readAndAddRobots(FILE *file, char **grid);
-void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j);
-
 
 int main() {
     printf("Hello Controller!\n");
@@ -26,12 +19,11 @@ int main() {
 
     readGridDimensions(&gm);
 
-
     readAndAddStorages(&gm);
     readAndAddItems(&gm);
     readAndAddRobots(&gm);
 
-    printGrid(gm.grid, gm.grid_size_i, gm.grid_size_j);
+    printGrid(&gm);
 
 
     //int fd_input;
@@ -61,83 +53,4 @@ int main() {
     printf("FIFO closed\n");
 
     return EXIT_SUCCESS;
-}
-
-/*
-void readAndAddStorages(FILE *file, char **grid) {
-    char input_line[INPUT_BUFFER_SIZE];
-    size_t x;
-    size_t y;
-
-    fgets(input_line, INPUT_BUFFER_SIZE, file);
-    char *token = strtok(input_line, " ");
-    while (token) {
-        token = strtok(NULL, " ");
-        if (!token) {
-            break;
-        }
-        x = atoi(token);
-        token = strtok(NULL, " ");
-        y = atoi(token);
-
-        grid[x][y] = 'S';
-    }
-}
-*/
-
-/*
-void readAndAddItems(FILE *file, char **grid) {
-    char input_line[INPUT_BUFFER_SIZE];
-    size_t x;
-    size_t y;
-
-    fgets(input_line, INPUT_BUFFER_SIZE, file);
-    char *token = strtok(input_line, " ");
-    while (token) {
-        token = strtok(NULL, " ");
-        if (!token) {
-            break;
-        }
-
-        x = atoi(token);
-        token = strtok(NULL, " ");
-        y = atoi(token);
-
-        grid[x][y] = 'I';
-    }
-}
-*/
-
-/*
-void readAndAddRobots(FILE *file, char **grid) {
-    char input_line[INPUT_BUFFER_SIZE];
-    size_t x;
-    size_t y;
-    int robot_number = 0;
-
-    fgets(input_line, INPUT_BUFFER_SIZE, file);
-    char *token = strtok(input_line, " ");
-    while (token) {
-        token = strtok(NULL, " ");
-        if (!token) {
-            break;
-        }
-
-        x = atoi(token);
-        token = strtok(NULL, " ");
-        y = atoi(token);
-
-        grid[x][y] = robot_number + '0';
-        robot_number++;
-    }
-}
-*/
-
-void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j) {
-    for (size_t j=0; j<grid_size_j; j++) {
-        for (size_t i=0; i<grid_size_i; i++) {
-            printf("%c ", grid[i][j]);
-        }
-        printf("\n");
-    }
 }

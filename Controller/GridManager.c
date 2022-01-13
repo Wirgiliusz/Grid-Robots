@@ -1,6 +1,7 @@
 #include "GridManager.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int openFile(struct GridManager *gm, const char *file_name) {
     gm->file = fopen(file_name, "r");
@@ -101,5 +102,14 @@ void readAndAddRobots(struct GridManager *gm) {
 
         gm->grid[x][y] = robot_number + '0';
         robot_number++;
+    }
+}
+
+void printGrid(struct GridManager *gm) {
+    for (size_t j=0; j<gm->grid_size_j; j++) {
+        for (size_t i=0; i<gm->grid_size_i; i++) {
+            printf("%c ", gm->grid[i][j]);
+        }
+        printf("\n");
     }
 }
