@@ -63,10 +63,6 @@ print("Sending messages to [OUTPUT] FIFO:")
 print("Acknowledge msg: success")
 fifo_output.write("success")
 
-
-fifo_input.close()
-print("[INPUT] FIFO closed") 
-
 fifo_output.close()
 print("[OUTPUT] FIFO closed") 
 
@@ -77,13 +73,22 @@ grid = Grid(screen, grid_size_x, grid_size_y,
 (robots_coordinates))
 grid.drawGrid()
 
-'''
-grid = Grid(screen, 6, 6, 
-((1,5), (3,5), (5,5)), 
-((2,3), (4,4)),
-((0,0), ))
-grid.drawGrid()
-'''
+
+print("Reading messages from [INPUT] FIFO:")
+path_data = fifo_input.readline()
+path_points = path_data.split(" ")
+path_coordinates = []
+for i in range(0, len(path_points)-1, 2):
+    x = int(path_points[i])
+    y = int(path_points[i+1])
+    path_coordinates.append((x,y))
+
+print("Path msg: ", path_coordinates)
+
+fifo_input.close()
+print("[INPUT] FIFO closed") 
+
+
 
 while True:
     for event in pygame.event.get():

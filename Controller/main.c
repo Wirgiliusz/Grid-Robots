@@ -53,7 +53,9 @@ int main() {
     printf("Read msg: %s\n", buf);
 
 
-
+    printf("Writing messages to [OUTPUT] FIFO:\n");
+    const char *msg_path = "0 0 0 1 0 2 1 2 2 2\n";
+    write(fd_output, msg_path, strlen(msg_path));
 
 
     close(fd_output);
