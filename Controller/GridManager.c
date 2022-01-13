@@ -113,3 +113,64 @@ void printGrid(struct GridManager *gm) {
         printf("\n");
     }
 }
+
+void constructMessages(struct GridManager *gm) {
+    size_t msg_robots_idx = 0;
+    size_t msg_items_idx = 0;
+    size_t msg_storages_idx = 0;
+
+    addGridSizeMessege(gm);
+
+    for (size_t j=0; j<gm->grid_size_j; j++) {
+        for (size_t i=0; i<gm->grid_size_i; i++) {
+            if (gm->grid[i][j] == '0') {
+                addRobotsPointsMessege(gm, i, j, msg_robots_idx);
+                msg_robots_idx += 4;
+            } else if (gm->grid[i][j] == 'I') {
+                addItemsPointsMessege(gm, i, j, msg_items_idx);
+                msg_items_idx += 4;
+            } else if (gm->grid[i][j] == 'S') {
+                addStoragesPointsMessege(gm, i, j, msg_storages_idx);
+                msg_storages_idx += 4;
+            }
+        }
+    }
+
+    gm->msg_robots_points[msg_robots_idx] = '\n';
+    gm->msg_robots_points[msg_robots_idx + 1] = '\0';
+
+    gm->msg_items_points[msg_items_idx] = '\n';
+    gm->msg_items_points[msg_items_idx + 1] = '\0';
+
+    gm->msg_storages_points[msg_storages_idx] = '\n';
+    gm->msg_storages_points[msg_storages_idx + 1] = '\0';
+}
+
+void addGridSizeMessege(struct GridManager *gm) {
+    gm->msg_grid_size[0] = gm->grid_size_i + '0';
+    gm->msg_grid_size[1] = ' ';
+    gm->msg_grid_size[2] = gm->grid_size_j + '0';
+    gm->msg_grid_size[3] = '\n';
+    gm->msg_grid_size[4] = '\0';
+}
+
+void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx) {
+    gm->msg_robots_points[msg_idx] = robot_position_i + '0';
+    gm->msg_robots_points[msg_idx + 1] = ' ';
+    gm->msg_robots_points[msg_idx + 2] = robot_position_j + '0';
+    gm->msg_robots_points[msg_idx + 3] = ' ';
+}
+
+void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx) {
+    gm->msg_items_points[msg_idx] = item_position_i + '0';
+    gm->msg_items_points[msg_idx + 1] = ' ';
+    gm->msg_items_points[msg_idx + 2] = item_position_j + '0';
+    gm->msg_items_points[msg_idx + 3] = ' ';
+}
+
+void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx) {
+    gm->msg_storages_points[msg_idx] = storage_position_i + '0';
+    gm->msg_storages_points[msg_idx + 1] = ' ';
+    gm->msg_storages_points[msg_idx + 2] = storage_position_j + '0';
+    gm->msg_storages_points[msg_idx + 3] = ' ';
+}
