@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 int openFile(struct GridManager *gm, const char *file_name) {
     gm->file = fopen(file_name, "r");
@@ -123,7 +124,7 @@ void constructMessages(struct GridManager *gm) {
 
     for (size_t j=0; j<gm->grid_size_j; j++) {
         for (size_t i=0; i<gm->grid_size_i; i++) {
-            if (gm->grid[i][j] == '0') {
+            if (isdigit(gm->grid[i][j])) {
                 addRobotsPointsMessege(gm, i, j, msg_robots_idx);
                 msg_robots_idx += 4;
             } else if (gm->grid[i][j] == 'I') {
