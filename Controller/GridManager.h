@@ -16,17 +16,5 @@ struct GridManager {
 };
 
 int readInputData(struct GridManager *gm, const char *file_name);
-int openFile(struct GridManager *gm, const char *file_name);
-void readGridDimensions(struct GridManager *gm);
-void createEmptyGrid(struct GridManager *gm);
-void readAndAddStorages(struct GridManager *gm);
-void readAndAddItems(struct GridManager *gm);
-void readAndAddRobots(struct GridManager *gm);
+
 void printGrid(struct GridManager *gm);
-
-void constructMessages(struct GridManager *gm);
-void addGridSizeMessege(struct GridManager *gm);
-void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx);
-void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx);
-void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx);
-

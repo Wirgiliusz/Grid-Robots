@@ -5,6 +5,20 @@
 #include <ctype.h>
 
 
+static int openFile(struct GridManager *gm, const char *file_name);
+static void readGridDimensions(struct GridManager *gm);
+static void createEmptyGrid(struct GridManager *gm);
+static void readAndAddStorages(struct GridManager *gm);
+static void readAndAddItems(struct GridManager *gm);
+static void readAndAddRobots(struct GridManager *gm);
+
+static void constructMessages(struct GridManager *gm);
+static void addGridSizeMessege(struct GridManager *gm);
+static void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx);
+static void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx);
+static void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx);
+
+
 int readInputData(struct GridManager *gm, const char *file_name) {
     if(!openFile(gm, file_name)) {
         perror("File opening failed");
@@ -24,7 +38,7 @@ int readInputData(struct GridManager *gm, const char *file_name) {
 }
 
 
-int openFile(struct GridManager *gm, const char *file_name) {
+static int openFile(struct GridManager *gm, const char *file_name) {
     gm->file = fopen(file_name, "r");
     if (!gm->file) {
         perror("File opening failed");
@@ -34,7 +48,7 @@ int openFile(struct GridManager *gm, const char *file_name) {
     }
 }
 
-void readGridDimensions(struct GridManager *gm) {
+static void readGridDimensions(struct GridManager *gm) {
     char input_line[INPUT_BUFFER_SIZE];
 
     fgets(input_line, INPUT_BUFFER_SIZE, gm->file);
@@ -46,7 +60,7 @@ void readGridDimensions(struct GridManager *gm) {
     createEmptyGrid(gm);
 }
 
-void createEmptyGrid(struct GridManager *gm) {
+static void createEmptyGrid(struct GridManager *gm) {
     char **grid = malloc(sizeof(char*)*gm->grid_size_j);
     for (size_t i=0; i<gm->grid_size_i; i++) {
         char *row = malloc(sizeof(char)*gm->grid_size_i);
@@ -62,7 +76,7 @@ void createEmptyGrid(struct GridManager *gm) {
     gm->grid = grid;
 }
 
-void readAndAddStorages(struct GridManager *gm) {
+static void readAndAddStorages(struct GridManager *gm) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
     size_t y;
@@ -82,7 +96,7 @@ void readAndAddStorages(struct GridManager *gm) {
     }
 }
 
-void readAndAddItems(struct GridManager *gm) {
+static void readAndAddItems(struct GridManager *gm) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
     size_t y;
@@ -103,7 +117,7 @@ void readAndAddItems(struct GridManager *gm) {
     }
 }
 
-void readAndAddRobots(struct GridManager *gm) {
+static void readAndAddRobots(struct GridManager *gm) {
     char input_line[INPUT_BUFFER_SIZE];
     size_t x;
     size_t y;
@@ -126,16 +140,7 @@ void readAndAddRobots(struct GridManager *gm) {
     }
 }
 
-void printGrid(struct GridManager *gm) {
-    for (size_t j=0; j<gm->grid_size_j; j++) {
-        for (size_t i=0; i<gm->grid_size_i; i++) {
-            printf("%c ", gm->grid[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-void constructMessages(struct GridManager *gm) {
+static void constructMessages(struct GridManager *gm) {
     size_t msg_robots_idx = 0;
     size_t msg_items_idx = 0;
     size_t msg_storages_idx = 0;
@@ -167,7 +172,7 @@ void constructMessages(struct GridManager *gm) {
     gm->msg_storages_points[msg_storages_idx + 1] = '\0';
 }
 
-void addGridSizeMessege(struct GridManager *gm) {
+static void addGridSizeMessege(struct GridManager *gm) {
     gm->msg_grid_size[0] = gm->grid_size_i + '0';
     gm->msg_grid_size[1] = ' ';
     gm->msg_grid_size[2] = gm->grid_size_j + '0';
@@ -175,23 +180,32 @@ void addGridSizeMessege(struct GridManager *gm) {
     gm->msg_grid_size[4] = '\0';
 }
 
-void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx) {
+static void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx) {
     gm->msg_robots_points[msg_idx] = robot_position_i + '0';
     gm->msg_robots_points[msg_idx + 1] = ' ';
     gm->msg_robots_points[msg_idx + 2] = robot_position_j + '0';
     gm->msg_robots_points[msg_idx + 3] = ' ';
 }
 
-void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx) {
+static void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx) {
     gm->msg_items_points[msg_idx] = item_position_i + '0';
     gm->msg_items_points[msg_idx + 1] = ' ';
     gm->msg_items_points[msg_idx + 2] = item_position_j + '0';
     gm->msg_items_points[msg_idx + 3] = ' ';
 }
 
-void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx) {
+static void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx) {
     gm->msg_storages_points[msg_idx] = storage_position_i + '0';
     gm->msg_storages_points[msg_idx + 1] = ' ';
     gm->msg_storages_points[msg_idx + 2] = storage_position_j + '0';
     gm->msg_storages_points[msg_idx + 3] = ' ';
+}
+
+void printGrid(struct GridManager *gm) {
+    for (size_t j=0; j<gm->grid_size_j; j++) {
+        for (size_t i=0; i<gm->grid_size_i; i++) {
+            printf("%c ", gm->grid[i][j]);
+        }
+        printf("\n");
+    }
 }
