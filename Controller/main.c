@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "GridManager.h"
 
 #define INPUT_BUFFER_SIZE 1024
 
@@ -19,21 +20,25 @@ void printGrid(char **grid, size_t grid_size_i, size_t grid_size_j);
 int main() {
     printf("Hello Controller!\n");
 
+    /*
     FILE *file;
     file = fopen("input.txt", "r");
     if (!file) {
         perror("File opening failed");
         return EXIT_FAILURE;
     }
+    */
+    struct GridManager gm;
+    openFile(&gm, "input.txt");
 
     size_t grid_size_i = 0;
     size_t grid_size_j = 0;
-    readGridDimensions(file, &grid_size_i, &grid_size_j);
+    readGridDimensions(gm.file, &grid_size_i, &grid_size_j);
     char **grid = createEmptyGrid(grid_size_i, grid_size_j);
 
-    readAndAddStorages(file, grid);
-    readAndAddItems(file, grid);
-    readAndAddRobots(file, grid);
+    readAndAddStorages(gm.file, grid);
+    readAndAddItems(gm.file, grid);
+    readAndAddRobots(gm.file, grid);
 
     printGrid(grid, grid_size_i, grid_size_j);
 
