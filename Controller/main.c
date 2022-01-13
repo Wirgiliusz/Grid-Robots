@@ -12,19 +12,7 @@ int main() {
     printf("Hello Controller!\n");
 
     struct GridManager gm;
-    if(!openFile(&gm, "input.txt")) {
-        perror("File opening failed");
-        return EXIT_FAILURE;
-    }
-
-    readGridDimensions(&gm);
-
-    readAndAddStorages(&gm);
-    readAndAddItems(&gm);
-    readAndAddRobots(&gm);
-
-    printGrid(&gm);
-    constructMessages(&gm);
+    readInputData(&gm, "input.txt");
 
 
     int fd_input;

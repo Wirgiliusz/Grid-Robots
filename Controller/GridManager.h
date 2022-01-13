@@ -15,6 +15,7 @@ struct GridManager {
     char **grid;
 };
 
+int readInputData(struct GridManager *gm, const char *file_name);
 int openFile(struct GridManager *gm, const char *file_name);
 void readGridDimensions(struct GridManager *gm);
 void createEmptyGrid(struct GridManager *gm);

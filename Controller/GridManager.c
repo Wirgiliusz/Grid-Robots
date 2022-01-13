@@ -4,6 +4,26 @@
 #include <stdio.h>
 #include <ctype.h>
 
+
+int readInputData(struct GridManager *gm, const char *file_name) {
+    if(!openFile(gm, file_name)) {
+        perror("File opening failed");
+        return -1;
+    }
+
+    readGridDimensions(gm);
+
+    readAndAddStorages(gm);
+    readAndAddItems(gm);
+    readAndAddRobots(gm);
+
+    printGrid(gm);
+    constructMessages(gm);
+
+    return 0;
+}
+
+
 int openFile(struct GridManager *gm, const char *file_name) {
     gm->file = fopen(file_name, "r");
     if (!gm->file) {
