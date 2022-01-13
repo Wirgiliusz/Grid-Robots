@@ -33,9 +33,15 @@ int main() {
     const char *fifo_output_path = "/tmp/myfifo_c2p";
     mkfifo(fifo_output_path, 0666);
     fd_output = open(fifo_output_path, O_WRONLY);
+    printf("[OUTPUT] FIFO opened\n");
+
+    const char *fifo_input_path = "/tmp/myfifo_p2c";
+    mkfifo(fifo_input_path, 0666);
+    fd_input = open(fifo_input_path, O_RDONLY);
+    printf("[INPUT] FIFO opened\n");
     
-    printf("FIFO opened\n");
-    printf("Writing messages to FIFO:\n");
+    
+    printf("Writing messages to [OUTPUT] FIFO:\n");
 
     printf("Grid size msg: %s", gm.msg_grid_size);
     write(fd_output, gm.msg_grid_size, strlen(gm.msg_grid_size));
@@ -49,17 +55,18 @@ int main() {
     printf("Robots points msg: %s", gm.msg_robots_points);
     write(fd_output, gm.msg_robots_points, strlen(gm.msg_robots_points));
 
-    close(fd_output);
-    printf("FIFO closed\n");
-
-    const char *fifo_input_path = "/tmp/myfifo_p2c";
-    mkfifo(fifo_input_path, 0666);
-    fd_input = open(fifo_input_path, O_RDONLY);
-
-    printf("Reading messages from FIFO:\n");
+    
+    printf("Reading messages from [INPUT] FIFO:\n");
     char buf[1024];
     read(fd_input, &buf, 1024);
     printf("Read msg: %s\n", buf);
+
+
+    close(fd_output);
+    printf("[OUTPUT] FIFO closed\n");
+
+    close(fd_input);
+    printf("[INPUT] FIFO closed\n");
 
     return EXIT_SUCCESS;
 }

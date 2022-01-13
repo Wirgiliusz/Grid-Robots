@@ -14,7 +14,12 @@ screen.fill((48, 46, 46))
 fifo_input_path = "/tmp/myfifo_c2p"
 fifo_input = open(fifo_input_path, 'r')
 print("[INPUT] FIFO opened") 
-print("Reading messages from FIFO:")
+fifo_output_path = "/tmp/myfifo_p2c"
+fifo_output = open(fifo_output_path, 'w')
+print("[OUTPUT] FIFO opened") 
+
+
+print("Reading messages from [INPUT] FIFO:")
 
 data = fifo_input.readline()
 grid_size = data.split(" ")
@@ -52,17 +57,15 @@ for i in range(0, len(robots_points)-1, 2):
 robots_coordinates = tuple(robots_coordinates)
 print("Robots points msg: ", robots_coordinates)
 
-fifo_input.close()
-print("[INPUT] FIFO closed") 
 
-
-fifo_output_path = "/tmp/myfifo_p2c"
-fifo_output = open(fifo_output_path, 'w')
-print("[OUTPUT] FIFO opened") 
-print("Sending messages to FIFO:")
+print("Sending messages to [OUTPUT] FIFO:")
 
 print("Acknowledge msg: success")
 fifo_output.write("success")
+
+
+fifo_input.close()
+print("[INPUT] FIFO closed") 
 
 fifo_output.close()
 print("[OUTPUT] FIFO closed") 
