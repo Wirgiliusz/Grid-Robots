@@ -26,10 +26,6 @@ int main() {
     printGrid(&gm);
     constructMessages(&gm);
 
-    printf("Grid size msg: %s", gm.msg_grid_size);
-    printf("Storages points msg: %s", gm.msg_storages_points);
-    printf("Items points msg: %s", gm.msg_items_points);
-    printf("Robots points msg: %s", gm.msg_robots_points);
 
     //int fd_input;
     int fd_output;
@@ -40,10 +36,18 @@ int main() {
     // fd_input = open(fifo_input_path, O_RDONLY);
     fd_output = open(fifo_output_path, O_WRONLY);
     printf("FIFO opened\n");
+    printf("Writing messages to fifo:\n");
 
+    printf("Grid size msg: %s", gm.msg_grid_size);
     write(fd_output, gm.msg_grid_size, strlen(gm.msg_grid_size));
+
+    printf("Storages points msg: %s", gm.msg_storages_points);
     write(fd_output, gm.msg_storages_points, strlen(gm.msg_storages_points));
+
+    printf("Items points msg: %s", gm.msg_items_points);
     write(fd_output, gm.msg_items_points, strlen(gm.msg_items_points));
+
+    printf("Robots points msg: %s", gm.msg_robots_points);
     write(fd_output, gm.msg_robots_points, strlen(gm.msg_robots_points));
 
     close(fd_output);
