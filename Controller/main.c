@@ -12,7 +12,10 @@ int main() {
     printf("Hello Controller!\n");
 
     struct GridManager gm;
-    readInputData(&gm, "input.txt");
+    if(readInputData(&gm, "input.txt") == -1) {
+        perror("File opening failed");
+        return EXIT_FAILURE;
+    }
 
 
     int fd_input;
@@ -48,6 +51,9 @@ int main() {
     char buf[1024];
     read(fd_input, &buf, 1024);
     printf("Read msg: %s\n", buf);
+
+
+
 
 
     close(fd_output);
