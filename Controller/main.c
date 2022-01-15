@@ -58,6 +58,21 @@ int main() {
     printf("Movement path msg: %s", msg_path);
     write(fd_output, msg_path, strlen(msg_path));
 
+    const char *msg_path2 = "3 3 3 4 2 4 1 4\n";
+    printf("Movement path msg: %s", msg_path2);
+    write(fd_output, msg_path2, strlen(msg_path2));
+
+    printf("Reading messages from [INPUT] FIFO:\n");
+    while(1) {
+        read(fd_input, &buf, 1024);
+        if (strncmp(buf, "end", 3) == 0) {
+            buf[3] = '\0';
+            printf("Read msg: %s\n", buf);
+            break;
+        }
+    }
+    
+
 
     close(fd_output);
     printf("[OUTPUT] FIFO closed\n");
