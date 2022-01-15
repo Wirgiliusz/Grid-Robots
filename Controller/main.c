@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include "GridManager.h"
 
+char* constructPath(int x_0, int y_0, int x_f, int y_f);
+void addPathMessage(char *path, int x, int y, int msg_idx);
 
 int main() {
     printf("Hello Controller!\n");
@@ -81,4 +83,52 @@ int main() {
     printf("[INPUT] FIFO closed\n");
 
     return EXIT_SUCCESS;
+}
+
+
+char* constructPath(int x_0, int y_0, int x_f, int y_f) {
+    int x_t = x_0;
+    int y_t = y_0;
+    int i = 0;
+    char *path = malloc(sizeof(char)*1024);
+    addPathMessage(path, x_t, y_t, i);
+    i += 4;
+
+    if (x_t < x_f) {
+        while (x_t < x_f) {
+            ++x_t;
+            addPathMessage(path, x_t, y_t, i);
+            i += 4;
+        }
+    } else {
+        while (x_t > x_f) {
+            --x_t;
+            addPathMessage(path, x_t, y_t, i);
+            i += 4;
+        }
+    }
+    if (y_t < y_f) {
+        while (y_t < y_f) {
+            ++y_t;
+            addPathMessage(path, x_t, y_t, i);
+            i += 4;
+        }
+    } else {
+        while (y_t > y_f) {
+            --y_t;
+            addPathMessage(path, x_t, y_t, i);
+            i += 4;
+        }
+    }
+
+    path[i] = '\n';
+    path[i + 1] = '\0';
+    return path;
+}
+
+void addPathMessage(char *path, int x, int y, int msg_idx) {
+    path[msg_idx] = x + '0';
+    path[msg_idx + 1] = ' ';
+    path[msg_idx + 2] = y + '0';
+    path[msg_idx + 3] = ' ';
 }
