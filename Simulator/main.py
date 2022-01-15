@@ -108,8 +108,20 @@ while True:
                 print("D pressed")
                 grid.moveRobot("E")
 
+    
+
+
     if grid.play_animations:
+        print("Robots movement")
         grid.updateRobotsPositions()
+    else:
+        print("Robots stopped")
+        if len(path_coordinates) > 1:
+            print("Moving on path: ", path_coordinates)
+            moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
+            print(moved)
+            if moved:
+                path_coordinates.pop(0)
 
 
     pygame.display.update()

@@ -109,3 +109,20 @@ class Grid:
                         elif dir == "E":
                             robot.moveToCoord(robot.i+1, robot.j+1)
         self.play_animations = True
+
+    def moveRobotFromCoordToCoord(self, robot_coord, destination_coord):
+        moved = False
+        robot_i = robot_coord[0]
+        robot_j = robot_coord[1]
+        dest_i = destination_coord[0]
+        dest_j = destination_coord[1]
+        robot = self.robots_grid[robot_i][robot_j]
+        if robot:
+            if not robot.movement:
+                robot.moveToCoord(dest_i, dest_j)
+                self.robots_grid[dest_i][dest_j] = self.robots_grid[robot_i][robot_j]
+                self.robots_grid[robot_i][robot_j] = 0
+                moved = True
+        
+        self.play_animations = True
+        return moved
