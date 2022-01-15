@@ -56,11 +56,11 @@ int main() {
 
 
     printf("Writing messages to [OUTPUT] FIFO:\n");
-    const char *msg_path = "0 0 0 1 0 2 1 2 2 2\n";
+    const char *msg_path = constructPath(0, 0, 2, 2);
     printf("Movement path msg: %s", msg_path);
     write(fd_output, msg_path, strlen(msg_path));
 
-    const char *msg_path2 = "3 3 3 4 2 4 1 4\n";
+    const char *msg_path2 = constructPath(3, 3, 1, 4);
     printf("Movement path msg: %s", msg_path2);
     write(fd_output, msg_path2, strlen(msg_path2));
 
