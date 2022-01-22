@@ -8,6 +8,7 @@
 #include "GridManager.h"
 
 char* constructPath(int x_0, int y_0, int x_f, int y_f);
+char* constructPathThroughPoint(int x_0, int y_0, int x_f, int y_f, int x_p, int y_p);
 void addPathMessage(char *path, int x, int y, int msg_idx);
 
 int main() {
@@ -56,7 +57,7 @@ int main() {
 
 
     printf("Writing messages to [OUTPUT] FIFO:\n");
-    const char *msg_path = constructPath(0, 0, 2, 2);
+    const char *msg_path = constructPathThroughPoint(0, 0, 5, 5, 4, 4);
     printf("Movement path msg: %s", msg_path);
     write(fd_output, msg_path, strlen(msg_path));
 
@@ -123,7 +124,28 @@ char* constructPath(int x_0, int y_0, int x_f, int y_f) {
 
     path[i] = '\n';
     path[i + 1] = '\0';
+
     return path;
+}
+
+char* constructPathThroughPoint(int x_0, int y_0, int x_f, int y_f, int x_p, int y_p) {
+    char *path_to_point = malloc(sizeof(char)*1024);
+    char *path_from_point = malloc(sizeof(char)*1024);
+
+    path_to_point = constructPath(x_0, y_0, x_p, y_p);
+    size_t path_len = strlen(path_to_point);
+    path_to_point[path_len - 5] = '\0';
+
+    printf("Path to point: %s\n", path_to_point);
+
+    path_from_point = constructPath(x_p, y_p, x_f, y_f);
+    printf("Path from point: %s\n", path_from_point);
+
+    strncat(path_to_point, path_from_point, path_len - 5);
+
+    printf("Path connected: %s\n", path_to_point);
+
+    return path_to_point;
 }
 
 void addPathMessage(char *path, int x, int y, int msg_idx) {
