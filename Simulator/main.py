@@ -2,8 +2,10 @@ import pygame
 from pygame.locals import *
 import sys
 import os
+import signal
 
 from grid import Grid
+
 
 
 pygame.init()
@@ -18,6 +20,21 @@ fifo_output_path = "/tmp/myfifo_p2c"
 fifo_output = open(fifo_output_path, 'w')
 print("[OUTPUT] FIFO opened") 
 
+paths = []
+def readPaths():
+    print("Reading messages from [INPUT] FIFO:")
+
+    path_data = fifo_input.readline()
+    if len(path_data) > 1:
+        path_points = path_data.split(" ")
+        if len(path_points) > 1:
+            path_coordinates = []
+            for i in range(0, len(path_points)-1, 2):
+                x = int(path_points[i])
+                y = int(path_points[i+1])
+                path_coordinates.append((x,y))
+            print("Path msg: ", path_coordinates)
+            paths.append(path_coordinates)
 
 print("Reading messages from [INPUT] FIFO:")
 
@@ -73,42 +90,6 @@ grid = Grid(screen, grid_size_x, grid_size_y,
 (robots_coordinates))
 grid.drawGrid()
 
-paths = []
-print("Reading messages from [INPUT] FIFO:")
-path_data = fifo_input.readline()
-path_points = path_data.split(" ")
-path_coordinates = []
-for i in range(0, len(path_points)-1, 2):
-    x = int(path_points[i])
-    y = int(path_points[i+1])
-    path_coordinates.append((x,y))
-print("Path msg: ", path_coordinates)
-paths.append(path_coordinates)
-
-path_data = fifo_input.readline()
-path_points = path_data.split(" ")
-path_coordinates = []
-for i in range(0, len(path_points)-1, 2):
-    x = int(path_points[i])
-    y = int(path_points[i+1])
-    path_coordinates.append((x,y))
-print("Path msg: ", path_coordinates)
-paths.append(path_coordinates)
-
-path_data = fifo_input.readline()
-path_points = path_data.split(" ")
-path_coordinates = []
-for i in range(0, len(path_points)-1, 2):
-    x = int(path_points[i])
-    y = int(path_points[i+1])
-    path_coordinates.append((x,y))
-print("Path msg: ", path_coordinates)
-paths.append(path_coordinates)
-
-fifo_input.close()
-print("[INPUT] FIFO closed") 
-
-
 
 while True:
     for event in pygame.event.get():
@@ -160,6 +141,9 @@ while True:
                         print("[OUTPUT] FIFO closed") 
 
 
+    readPaths()
     pygame.display.update()
     pygame.time.delay(10)
 
+fifo_input.close()
+print("[INPUT] FIFO closed") 

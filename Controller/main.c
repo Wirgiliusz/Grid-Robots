@@ -48,7 +48,8 @@ int main() {
     printf("Robots points msg: %s", gm.msg_robots_points);
     write(fd_output, gm.msg_robots_points, strlen(gm.msg_robots_points));
 
-    
+    close(fd_output);
+
     printf("Reading messages from [INPUT] FIFO:\n");
     char buf[1024];
     read(fd_input, &buf, 1024);
@@ -81,7 +82,11 @@ int main() {
             if (msg_path) {
                 free_robots--;
                 printf("Movement path msg: %s", msg_path);
+
+                fd_output = open(fifo_output_path, O_WRONLY);
                 write(fd_output, msg_path, strlen(msg_path));
+                close(fd_output);
+
                 free((void *)msg_path);
             }
         } else {
@@ -89,7 +94,7 @@ int main() {
         }
     }
     
-    close(fd_output);
+    
     printf("[OUTPUT] FIFO closed\n");
 
     close(fd_input);
