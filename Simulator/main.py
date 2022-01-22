@@ -127,6 +127,7 @@ while True:
             for path_coordinates in paths:
                 if len(path_coordinates) > 1:
                     print("Moving on path: ", path_coordinates)
+                    grid.checkRobotOnItem(path_coordinates[0])
                     moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
                     print(moved)
                     if moved:

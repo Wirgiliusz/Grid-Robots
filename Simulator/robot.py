@@ -5,8 +5,12 @@ class Robot:
     movement = False
 
     def __init__(self, i, j) -> None:
-        self.image = pygame.image.load('img/robot.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.empty_robot_image = pygame.image.load('img/robot.png').convert_alpha()
+        self.empty_robot_image = pygame.transform.scale(self.empty_robot_image, (100, 100))
+        self.item_robot_image = pygame.image.load('img/robot_item.png').convert_alpha()
+        self.item_robot_image = pygame.transform.scale(self.item_robot_image, (100, 100))
+
+        self.image = self.empty_robot_image
         self.i = i
         self.j = j
 

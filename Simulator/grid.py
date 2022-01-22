@@ -126,3 +126,11 @@ class Grid:
         
         self.play_animations = True
         return moved
+
+    def checkRobotOnItem(self, robot_coord):
+        robot_i = robot_coord[0]
+        robot_j = robot_coord[1]
+
+        if self.items_grid[robot_i][robot_j]:
+            self.robots_grid[robot_i][robot_j].image = self.robots_grid[robot_i][robot_j].item_robot_image
+            self.items_grid[robot_i][robot_j] = 0
