@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "GridManager.h"
+#include "gridManager.h"
 #include "pathPlanner.h"
 
 

@@ -1,4 +1,4 @@
-#include "GridManager.h"
+#include "gridManager.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
