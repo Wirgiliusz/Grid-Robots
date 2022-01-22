@@ -143,3 +143,4 @@ class Grid:
         if isinstance(self.grid[robot_i][robot_j], Storage):
             self.robots_grid[robot_i][robot_j].changeImage(False)
             self.drawGrid()
+            return True

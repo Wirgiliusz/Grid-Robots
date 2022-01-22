@@ -36,6 +36,19 @@ def readPaths():
             print("Path msg: ", path_coordinates)
             paths.append(path_coordinates)
 
+def sendFinishMessage(robot_coordinates):
+    robot_x = robot_coordinates[0]
+    robot_y = robot_coordinates[1]
+    fifo_output = open(fifo_output_path, 'w')
+    print("[OUTPUT] FIFO opened") 
+
+    print("Sending messages to [OUTPUT] FIFO:")
+    message = str(robot_x) + " " + str(robot_y) + "\n"
+    fifo_output.write(message)
+
+    fifo_output.close()
+    print("[OUTPUT] FIFO closed") 
+
 print("Reading messages from [INPUT] FIFO:")
 
 data = fifo_input.readline()
@@ -117,7 +130,8 @@ while True:
         if paths:
             for path_coordinates in paths:
                 grid.checkRobotOnItem(path_coordinates[0])
-                grid.checkRobotOnStorage(path_coordinates[0])
+                if grid.checkRobotOnStorage(path_coordinates[0]):
+                    sendFinishMessage(path_coordinates[0])
 
                 if len(path_coordinates) > 1:
                     print("Moving on path: ", path_coordinates)
@@ -128,18 +142,6 @@ while True:
                         path_coordinates.pop(0)
                 else:
                     paths.remove(path_coordinates)
-                    if not paths:
-                        fifo_output = open(fifo_output_path, 'w')
-                        print("[OUTPUT] FIFO opened") 
-
-                        print("Sending messages to [OUTPUT] FIFO:")
-
-                        print("End msg: end")
-                        fifo_output.write("end")
-
-                        fifo_output.close()
-                        print("[OUTPUT] FIFO closed") 
-
 
     readPaths()
     pygame.display.update()

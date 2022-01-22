@@ -19,7 +19,6 @@ int main() {
         return EXIT_FAILURE;
     }
 
-
     int fd_input;
     int fd_output;
     
@@ -88,8 +87,22 @@ int main() {
                 close(fd_output);
 
                 free((void *)msg_path);
+
+                printGrid(&gm);
             }
-        } else {
+        } 
+
+        int status = read(fd_input, &buf, 4);
+        if (status != 0) {
+            buf[4] = '\0';
+            printf("Read msg: %s\n", buf);
+
+            size_t robot_i = buf[0] - '0';
+            size_t robot_j = buf[2] - '0';
+
+            // TODO Add storage recovery somehow
+            recoverRobot(&gm, robot_i, robot_j);
+            free_robots++;
             printGrid(&gm);
         }
     }
