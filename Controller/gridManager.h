@@ -18,3 +18,4 @@ struct GridManager {
 int readInputData(struct GridManager *gm, const char *file_name);
 
 void printGrid(struct GridManager *gm);
+char* planPath(struct GridManager *gm);

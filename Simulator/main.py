@@ -95,6 +95,16 @@ for i in range(0, len(path_points)-1, 2):
 print("Path msg: ", path_coordinates)
 paths.append(path_coordinates)
 
+path_data = fifo_input.readline()
+path_points = path_data.split(" ")
+path_coordinates = []
+for i in range(0, len(path_points)-1, 2):
+    x = int(path_points[i])
+    y = int(path_points[i+1])
+    path_coordinates.append((x,y))
+print("Path msg: ", path_coordinates)
+paths.append(path_coordinates)
+
 fifo_input.close()
 print("[INPUT] FIFO closed") 
 

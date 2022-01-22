@@ -1,4 +1,5 @@
 #include "gridManager.h"
+#include "pathPlanner.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -207,5 +208,47 @@ void printGrid(struct GridManager *gm) {
             printf("%c ", gm->grid[i][j]);
         }
         printf("\n");
+    }
+}
+
+char* planPath(struct GridManager *gm) {
+    size_t robot_i = 99;
+    size_t robot_j = 99;
+    size_t item_i = 99;
+    size_t item_j = 99;
+    size_t storage_i = 99;
+    size_t storage_j = 99;
+
+    for (size_t j=0; j<gm->grid_size_j; j++) {
+        for (size_t i=0; i<gm->grid_size_i; i++) {
+            if (robot_i != 99 && item_i != 99 && storage_i != 99) {
+                break;
+            }
+            
+            if (isdigit(gm->grid[i][j])) {
+                robot_i = i;
+                robot_j = j;
+            } else if (gm->grid[i][j] == 'I') {
+                item_i = i;
+                item_j = j;
+            } else if (gm->grid[i][j] == 'S') {
+                storage_i = i;
+                storage_j = j;
+            }
+        }
+
+        if (robot_i != 99 && item_i != 99 && storage_i != 99) {
+            break;
+        }
+    } 
+
+    if (robot_i != 99 && item_i != 99 && storage_i != 99) {
+        gm->grid[robot_i][robot_j] = '_';
+        gm->grid[item_i][item_j] = '_';
+        gm->grid[storage_i][storage_j] = '_';
+
+        return constructPathThroughPoint(robot_i, robot_j, storage_i, storage_j, item_i, item_j);
+    } else {
+        return NULL;
     }
 }

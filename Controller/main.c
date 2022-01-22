@@ -8,6 +8,7 @@
 #include "gridManager.h"
 #include "pathPlanner.h"
 
+size_t free_robots = 3;
 
 int main() {
     printf("Hello Controller!\n");
@@ -53,7 +54,7 @@ int main() {
     read(fd_input, &buf, 1024);
     printf("Read msg: %s\n", buf);
 
-
+    /*
     printf("Writing messages to [OUTPUT] FIFO:\n");
     const char *msg_path = constructPathThroughPoint(0, 0, 5, 5, 4, 4);
     printf("Movement path msg: %s", msg_path);
@@ -72,9 +73,22 @@ int main() {
             break;
         }
     }
+    */
+
+    while(1) {
+        if (free_robots) {
+            const char* msg_path = planPath(&gm);
+            if (msg_path) {
+                free_robots--;
+                printf("Movement path msg: %s", msg_path);
+                write(fd_output, msg_path, strlen(msg_path));
+                free((void *)msg_path);
+            }
+        } else {
+            printGrid(&gm);
+        }
+    }
     
-
-
     close(fd_output);
     printf("[OUTPUT] FIFO closed\n");
 

@@ -56,7 +56,7 @@ char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, 
     path_from_point = constructPath(x_p, y_p, x_f, y_f);
     printf("Path from point: %s\n", path_from_point);
 
-    strncat(path_to_point, path_from_point, path_len - 5);
+    strncat(path_to_point, path_from_point, strlen(path_from_point));
 
     printf("Path connected: %s\n", path_to_point);
 
