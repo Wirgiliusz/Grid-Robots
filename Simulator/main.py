@@ -127,7 +127,7 @@ while True:
             for path_coordinates in paths:
                 grid.checkRobotOnItem(path_coordinates[0])
                 grid.checkRobotOnStorage(path_coordinates[0])
-                
+
                 if len(path_coordinates) > 1:
                     print("Moving on path: ", path_coordinates)
 
@@ -151,5 +151,5 @@ while True:
 
 
     pygame.display.update()
-    pygame.time.delay(100)
+    pygame.time.delay(10)
 
