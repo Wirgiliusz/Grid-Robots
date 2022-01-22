@@ -42,3 +42,9 @@ class Robot:
             self.animation_step = 0
             self.movement = False
         
+    def changeImage(self, has_item):
+        if has_item:
+            self.image = self.item_robot_image
+        else:
+            self.image = self.empty_robot_image
+

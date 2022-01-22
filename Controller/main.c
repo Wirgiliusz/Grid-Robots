@@ -60,7 +60,7 @@ int main() {
     printf("Movement path msg: %s", msg_path);
     write(fd_output, msg_path, strlen(msg_path));
 
-    const char *msg_path2 = constructPath(3, 3, 1, 4);
+    const char *msg_path2 = constructPath(3, 3, 1, 5);
     printf("Movement path msg: %s", msg_path2);
     write(fd_output, msg_path2, strlen(msg_path2));
 
