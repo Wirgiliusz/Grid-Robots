@@ -5,130 +5,85 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "GridManager.h"
+#include "gridManager.h"
+#include "pathPlanner.h"
 
-char* constructPath(int x_0, int y_0, int x_f, int y_f);
-void addPathMessage(char *path, int x, int y, int msg_idx);
+
+enum States {ALL_ROBOTS_FREE, TWO_ROBOTS_FREE, ONE_ROBOT_FREE, ALL_ROBOTS_BUSY} state;
+enum Events {ROBOT_ENGAGED, ROBOT_RELEASED};
+
+enum States switchState(enum States current_state, enum Events event);
 
 int main() {
     printf("Hello Controller!\n");
+    state = ALL_ROBOTS_FREE;
 
     struct GridManager gm;
-    if(readInputData(&gm, "input.txt") == -1) {
+    if (readInputData(&gm, "input.txt") == -1) {
         perror("File opening failed");
         return EXIT_FAILURE;
     }
 
-
-    int fd_input;
-    int fd_output;
+    createFifos(&gm, "/tmp/myfifo_c2p", "/tmp/myfifo_p2c");
+    if (writeInputData(&gm) == -1) {
+        perror("Data connection failed");
+        return EXIT_FAILURE;
+    }
     
-    const char *fifo_output_path = "/tmp/myfifo_c2p";
-    mkfifo(fifo_output_path, 0666);
-    fd_output = open(fifo_output_path, O_WRONLY);
-    printf("[OUTPUT] FIFO opened\n");
-
-    const char *fifo_input_path = "/tmp/myfifo_p2c";
-    mkfifo(fifo_input_path, 0666);
-    fd_input = open(fifo_input_path, O_RDONLY);
-    printf("[INPUT] FIFO opened\n");
-    
-    
-    printf("Writing messages to [OUTPUT] FIFO:\n");
-
-    printf("Grid size msg: %s", gm.msg_grid_size);
-    write(fd_output, gm.msg_grid_size, strlen(gm.msg_grid_size));
-
-    printf("Storages points msg: %s", gm.msg_storages_points);
-    write(fd_output, gm.msg_storages_points, strlen(gm.msg_storages_points));
-
-    printf("Items points msg: %s", gm.msg_items_points);
-    write(fd_output, gm.msg_items_points, strlen(gm.msg_items_points));
-
-    printf("Robots points msg: %s", gm.msg_robots_points);
-    write(fd_output, gm.msg_robots_points, strlen(gm.msg_robots_points));
-
-    
-    printf("Reading messages from [INPUT] FIFO:\n");
-    char buf[1024];
-    read(fd_input, &buf, 1024);
-    printf("Read msg: %s\n", buf);
-
-
-    printf("Writing messages to [OUTPUT] FIFO:\n");
-    const char *msg_path = constructPath(0, 0, 2, 2);
-    printf("Movement path msg: %s", msg_path);
-    write(fd_output, msg_path, strlen(msg_path));
-
-    const char *msg_path2 = constructPath(3, 3, 1, 4);
-    printf("Movement path msg: %s", msg_path2);
-    write(fd_output, msg_path2, strlen(msg_path2));
-
-    printf("Reading messages from [INPUT] FIFO:\n");
+    int robot_engaged = 0;
+    int robot_released = 0;
     while(1) {
-        read(fd_input, &buf, 1024);
-        if (strncmp(buf, "end", 3) == 0) {
-            buf[3] = '\0';
-            printf("Read msg: %s\n", buf);
-            break;
+        if (gm.free_robots) {
+            robot_engaged = scanAndPlan(&gm);
+            if (robot_engaged) {
+                switchState(state, ROBOT_ENGAGED);
+            }
+        }
+
+        robot_released = readAndRecover(&gm);
+        if (robot_released) {
+
         }
     }
     
-
-
-    close(fd_output);
-    printf("[OUTPUT] FIFO closed\n");
-
-    close(fd_input);
-    printf("[INPUT] FIFO closed\n");
-
+    cleanUp(&gm);
+    
     return EXIT_SUCCESS;
 }
 
+enum States switchState(enum States current_state, enum Events event) {
+    switch (current_state) {
+        case ALL_ROBOTS_FREE:
+            if (event == ROBOT_ENGAGED) {
+                return TWO_ROBOTS_FREE;
+            } else if (event == ROBOT_RELEASED) {
+                return event;
+            }
+            break;
+        case TWO_ROBOTS_FREE:
+            if (event == ROBOT_ENGAGED) {
+                return ONE_ROBOT_FREE;
+            } else if (event == ROBOT_RELEASED) {
+                return ALL_ROBOTS_FREE;
+            }
+            break;
+        case ONE_ROBOT_FREE:
+            if (event == ROBOT_ENGAGED) {
+                return ALL_ROBOTS_BUSY;
+            } else if (event == ROBOT_RELEASED) {
+                return TWO_ROBOTS_FREE;
+            }
+            break;
+        case ALL_ROBOTS_BUSY:
+            if (event == ROBOT_ENGAGED) {
+                return event;
+            } else if (event == ROBOT_RELEASED) {
+                return ONE_ROBOT_FREE;
+            }
+            break;
+        default:
+            return current_state;
+    }   
 
-char* constructPath(int x_0, int y_0, int x_f, int y_f) {
-    int x_t = x_0;
-    int y_t = y_0;
-    int i = 0;
-    char *path = malloc(sizeof(char)*1024);
-    addPathMessage(path, x_t, y_t, i);
-    i += 4;
-
-    if (x_t < x_f) {
-        while (x_t < x_f) {
-            ++x_t;
-            addPathMessage(path, x_t, y_t, i);
-            i += 4;
-        }
-    } else {
-        while (x_t > x_f) {
-            --x_t;
-            addPathMessage(path, x_t, y_t, i);
-            i += 4;
-        }
-    }
-    if (y_t < y_f) {
-        while (y_t < y_f) {
-            ++y_t;
-            addPathMessage(path, x_t, y_t, i);
-            i += 4;
-        }
-    } else {
-        while (y_t > y_f) {
-            --y_t;
-            addPathMessage(path, x_t, y_t, i);
-            i += 4;
-        }
-    }
-
-    path[i] = '\n';
-    path[i + 1] = '\0';
-    return path;
-}
-
-void addPathMessage(char *path, int x, int y, int msg_idx) {
-    path[msg_idx] = x + '0';
-    path[msg_idx + 1] = ' ';
-    path[msg_idx + 2] = y + '0';
-    path[msg_idx + 3] = ' ';
+    return event;
 }

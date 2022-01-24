@@ -126,3 +126,21 @@ class Grid:
         
         self.play_animations = True
         return moved
+
+    def checkRobotOnItem(self, robot_coord):
+        robot_i = robot_coord[0]
+        robot_j = robot_coord[1]
+
+        if self.items_grid[robot_i][robot_j]:
+            self.robots_grid[robot_i][robot_j].changeImage(True)
+            self.items_grid[robot_i][robot_j] = 0
+            self.drawGrid()
+
+    def checkRobotOnStorage(self, robot_coord):
+        robot_i = robot_coord[0]
+        robot_j = robot_coord[1]
+
+        if isinstance(self.grid[robot_i][robot_j], Storage) and isinstance(self.robots_grid[robot_i][robot_j], Robot):
+            self.robots_grid[robot_i][robot_j].changeImage(False)
+            self.drawGrid()
+            return True

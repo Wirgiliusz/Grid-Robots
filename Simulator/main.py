@@ -2,8 +2,10 @@ import pygame
 from pygame.locals import *
 import sys
 import os
+import signal
 
 from grid import Grid
+
 
 
 pygame.init()
@@ -18,6 +20,34 @@ fifo_output_path = "/tmp/myfifo_p2c"
 fifo_output = open(fifo_output_path, 'w')
 print("[OUTPUT] FIFO opened") 
 
+paths = []
+def readPaths():
+    print("Reading messages from [INPUT] FIFO:")
+
+    path_data = fifo_input.readline()
+    if len(path_data) > 1:
+        path_points = path_data.split(" ")
+        if len(path_points) > 1:
+            path_coordinates = []
+            for i in range(0, len(path_points)-1, 2):
+                x = int(path_points[i])
+                y = int(path_points[i+1])
+                path_coordinates.append((x,y))
+            print("Path msg: ", path_coordinates)
+            paths.append(path_coordinates)
+
+def sendFinishMessage(robot_coordinates):
+    robot_x = robot_coordinates[0]
+    robot_y = robot_coordinates[1]
+    fifo_output = open(fifo_output_path, 'w')
+    print("[OUTPUT] FIFO opened") 
+
+    print("Sending messages to [OUTPUT] FIFO:")
+    message = str(robot_x) + " " + str(robot_y) + "\n"
+    fifo_output.write(message)
+
+    fifo_output.close()
+    print("[OUTPUT] FIFO closed") 
 
 print("Reading messages from [INPUT] FIFO:")
 
@@ -73,32 +103,6 @@ grid = Grid(screen, grid_size_x, grid_size_y,
 (robots_coordinates))
 grid.drawGrid()
 
-paths = []
-print("Reading messages from [INPUT] FIFO:")
-path_data = fifo_input.readline()
-path_points = path_data.split(" ")
-path_coordinates = []
-for i in range(0, len(path_points)-1, 2):
-    x = int(path_points[i])
-    y = int(path_points[i+1])
-    path_coordinates.append((x,y))
-print("Path msg: ", path_coordinates)
-paths.append(path_coordinates)
-
-path_data = fifo_input.readline()
-path_points = path_data.split(" ")
-path_coordinates = []
-for i in range(0, len(path_points)-1, 2):
-    x = int(path_points[i])
-    y = int(path_points[i+1])
-    path_coordinates.append((x,y))
-print("Path msg: ", path_coordinates)
-paths.append(path_coordinates)
-
-fifo_input.close()
-print("[INPUT] FIFO closed") 
-
-
 
 while True:
     for event in pygame.event.get():
@@ -125,27 +129,23 @@ while True:
         print("Robots stopped")
         if paths:
             for path_coordinates in paths:
+                grid.checkRobotOnItem(path_coordinates[0])
+                grid.checkRobotOnStorage(path_coordinates[0])
+
                 if len(path_coordinates) > 1:
                     print("Moving on path: ", path_coordinates)
+
                     moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
                     print(moved)
                     if moved:
                         path_coordinates.pop(0)
                 else:
+                    sendFinishMessage(path_coordinates[0])
                     paths.remove(path_coordinates)
-                    if not paths:
-                        fifo_output = open(fifo_output_path, 'w')
-                        print("[OUTPUT] FIFO opened") 
 
-                        print("Sending messages to [OUTPUT] FIFO:")
-
-                        print("End msg: end")
-                        fifo_output.write("end")
-
-                        fifo_output.close()
-                        print("[OUTPUT] FIFO closed") 
-
-
+    readPaths()
     pygame.display.update()
-    pygame.time.delay(100)
+    pygame.time.delay(1)
 
+fifo_input.close()
+print("[INPUT] FIFO closed") 
