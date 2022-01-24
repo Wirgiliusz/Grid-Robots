@@ -51,14 +51,13 @@ char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, 
     size_t path_len = strlen(path_to_point);
     path_to_point[path_len - 5] = '\0';
 
-    printf("Path to point: %s\n", path_to_point);
-
     path_from_point = constructPath(x_p, y_p, x_f, y_f);
-    printf("Path from point: %s\n", path_from_point);
+    path_len = strlen(path_from_point);
+    addPathMessage(path_from_point, x_f - 1, y_f, path_len - 1);
+    path_from_point[path_len + 3] = '\n';
+    path_from_point[path_len + 4] = '\0';
 
     strncat(path_to_point, path_from_point, strlen(path_from_point));
-
-    printf("Path connected: %s\n", path_to_point);
 
     return path_to_point;
 }

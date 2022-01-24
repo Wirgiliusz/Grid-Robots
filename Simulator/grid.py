@@ -140,7 +140,7 @@ class Grid:
         robot_i = robot_coord[0]
         robot_j = robot_coord[1]
 
-        if isinstance(self.grid[robot_i][robot_j], Storage):
+        if isinstance(self.grid[robot_i][robot_j], Storage) and isinstance(self.robots_grid[robot_i][robot_j], Robot):
             self.robots_grid[robot_i][robot_j].changeImage(False)
             self.drawGrid()
             return True

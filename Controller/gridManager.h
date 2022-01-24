@@ -19,4 +19,4 @@ int readInputData(struct GridManager *gm, const char *file_name);
 
 void printGrid(struct GridManager *gm);
 char* planPath(struct GridManager *gm);
-void recoverRobot(struct GridManager *gm, size_t robot_i, size_t robot_j);
+void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j);

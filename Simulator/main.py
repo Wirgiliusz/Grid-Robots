@@ -130,8 +130,7 @@ while True:
         if paths:
             for path_coordinates in paths:
                 grid.checkRobotOnItem(path_coordinates[0])
-                if grid.checkRobotOnStorage(path_coordinates[0]):
-                    sendFinishMessage(path_coordinates[0])
+                grid.checkRobotOnStorage(path_coordinates[0])
 
                 if len(path_coordinates) > 1:
                     print("Moving on path: ", path_coordinates)
@@ -141,11 +140,12 @@ while True:
                     if moved:
                         path_coordinates.pop(0)
                 else:
+                    sendFinishMessage(path_coordinates[0])
                     paths.remove(path_coordinates)
 
     readPaths()
     pygame.display.update()
-    pygame.time.delay(10)
+    pygame.time.delay(1)
 
 fifo_input.close()
 print("[INPUT] FIFO closed") 

@@ -253,6 +253,7 @@ char* planPath(struct GridManager *gm) {
     }
 }
 
-void recoverRobot(struct GridManager *gm, size_t robot_i, size_t robot_j) {
+void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j) {
     gm->grid[robot_i][robot_j] = '0';
+    gm->grid[robot_i + 1][robot_j] = 'S';
 }

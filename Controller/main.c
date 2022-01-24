@@ -54,27 +54,6 @@ int main() {
     read(fd_input, &buf, 1024);
     printf("Read msg: %s\n", buf);
 
-    /*
-    printf("Writing messages to [OUTPUT] FIFO:\n");
-    const char *msg_path = constructPathThroughPoint(0, 0, 5, 5, 4, 4);
-    printf("Movement path msg: %s", msg_path);
-    write(fd_output, msg_path, strlen(msg_path));
-
-    const char *msg_path2 = constructPath(3, 3, 1, 5);
-    printf("Movement path msg: %s", msg_path2);
-    write(fd_output, msg_path2, strlen(msg_path2));
-
-    printf("Reading messages from [INPUT] FIFO:\n");
-    while(1) {
-        read(fd_input, &buf, 1024);
-        if (strncmp(buf, "end", 3) == 0) {
-            buf[3] = '\0';
-            printf("Read msg: %s\n", buf);
-            break;
-        }
-    }
-    */
-
     while(1) {
         if (free_robots) {
             const char* msg_path = planPath(&gm);
@@ -100,8 +79,7 @@ int main() {
             size_t robot_i = buf[0] - '0';
             size_t robot_j = buf[2] - '0';
 
-            // TODO Add storage recovery somehow
-            recoverRobot(&gm, robot_i, robot_j);
+            recoverRobotAndStorage(&gm, robot_i, robot_j);
             free_robots++;
             printGrid(&gm);
         }
