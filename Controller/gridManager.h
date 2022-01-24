@@ -23,6 +23,8 @@ struct GridManager {
 };
 
 int readInputData(struct GridManager *gm, const char *file_name);
+void createFifos(struct GridManager *gm, const char* output_fifo_path, const char* input_fifo_path);
+int writeInputData(struct GridManager *gm);
 
 void printGrid(struct GridManager *gm);
 int scanAndPlan(struct GridManager *gm);

@@ -6,6 +6,8 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 
 static int openFile(struct GridManager *gm, const char *file_name);
@@ -14,6 +16,7 @@ static void createEmptyGrid(struct GridManager *gm);
 static void readAndAddStorages(struct GridManager *gm);
 static void readAndAddItems(struct GridManager *gm);
 static void readAndAddRobots(struct GridManager *gm);
+static int readConfirmation(struct GridManager *gm);
 
 static void constructMessages(struct GridManager *gm);
 static void addGridSizeMessege(struct GridManager *gm);
@@ -42,6 +45,51 @@ int readInputData(struct GridManager *gm, const char *file_name) {
     return 0;
 }
 
+void createFifos(struct GridManager *gm, const char* output_fifo_path, const char* input_fifo_path) {
+    gm->fifo_output_path = output_fifo_path;
+    
+    mkfifo(gm->fifo_output_path, 0666);
+    gm->fd_output = open(gm->fifo_output_path, O_WRONLY);
+    printf("[OUTPUT] FIFO opened\n");
+
+    gm->fifo_input_path = input_fifo_path;
+    mkfifo(gm->fifo_input_path, 0666);
+    gm->fd_input = open(gm->fifo_input_path, O_RDONLY);
+    printf("[INPUT] FIFO opened\n");
+}
+
+int writeInputData(struct GridManager *gm) {
+    printf("Writing messages to [OUTPUT] FIFO:\n");
+
+    printf("Grid size msg: %s", gm->msg_grid_size);
+    write(gm->fd_output, gm->msg_grid_size, strlen(gm->msg_grid_size));
+
+    printf("Storages points msg: %s", gm->msg_storages_points);
+    write(gm->fd_output, gm->msg_storages_points, strlen(gm->msg_storages_points));
+
+    printf("Items points msg: %s", gm->msg_items_points);
+    write(gm->fd_output, gm->msg_items_points, strlen(gm->msg_items_points));
+
+    printf("Robots points msg: %s", gm->msg_robots_points);
+    write(gm->fd_output, gm->msg_robots_points, strlen(gm->msg_robots_points));
+
+    close(gm->fd_output);
+
+    return readConfirmation(gm);
+}
+
+static int readConfirmation(struct GridManager *gm) {
+    printf("Reading messages from [INPUT] FIFO:\n");
+    char buf[1024];
+    read(gm->fd_input, &buf, 1024);
+    printf("Read msg: %s\n", buf);
+
+    if (strcmp(buf, "success") == 0) {
+        return 1;
+    } else {
+        return -1;
+    }
+}
 
 static int openFile(struct GridManager *gm, const char *file_name) {
     gm->file = fopen(file_name, "r");

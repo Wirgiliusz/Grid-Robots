@@ -13,46 +13,19 @@ int main() {
     printf("Hello Controller!\n");
 
     struct GridManager gm;
-    if(readInputData(&gm, "input.txt") == -1) {
+    if (readInputData(&gm, "input.txt") == -1) {
         perror("File opening failed");
         return EXIT_FAILURE;
     }
 
     gm.free_robots = 3;
     
-    gm.fifo_output_path = "/tmp/myfifo_c2p";
+    createFifos(&gm, "/tmp/myfifo_c2p", "/tmp/myfifo_p2c");
+    if (writeInputData(&gm) == -1) {
+        perror("Data connection failed");
+        return EXIT_FAILURE;
+    }
     
-    mkfifo(gm.fifo_output_path, 0666);
-    gm.fd_output = open(gm.fifo_output_path, O_WRONLY);
-    printf("[OUTPUT] FIFO opened\n");
-
-    gm.fifo_input_path = "/tmp/myfifo_p2c";
-    mkfifo(gm.fifo_input_path, 0666);
-    gm.fd_input = open(gm.fifo_input_path, O_RDONLY);
-    printf("[INPUT] FIFO opened\n");
-    
-    
-    printf("Writing messages to [OUTPUT] FIFO:\n");
-
-    printf("Grid size msg: %s", gm.msg_grid_size);
-    write(gm.fd_output, gm.msg_grid_size, strlen(gm.msg_grid_size));
-
-    printf("Storages points msg: %s", gm.msg_storages_points);
-    write(gm.fd_output, gm.msg_storages_points, strlen(gm.msg_storages_points));
-
-    printf("Items points msg: %s", gm.msg_items_points);
-    write(gm.fd_output, gm.msg_items_points, strlen(gm.msg_items_points));
-
-    printf("Robots points msg: %s", gm.msg_robots_points);
-    write(gm.fd_output, gm.msg_robots_points, strlen(gm.msg_robots_points));
-
-    close(gm.fd_output);
-
-    printf("Reading messages from [INPUT] FIFO:\n");
-    char buf[1024];
-    read(gm.fd_input, &buf, 1024);
-    printf("Read msg: %s\n", buf);
-
     while(1) {
         if (gm.free_robots) {
             scanAndPlan(&gm);
