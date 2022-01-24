@@ -28,6 +28,8 @@ static void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_
 
 
 int readInputData(struct GridManager *gm, const char *file_name) {
+    gm->free_robots = 0;
+    
     if(!openFile(gm, file_name)) {
         perror("File opening failed");
         return -1;
@@ -191,6 +193,7 @@ static void readAndAddRobots(struct GridManager *gm) {
 
         gm->grid[x][y] = robot_number + '0';
         robot_number++;
+        gm->free_robots++;
     }
 }
 
