@@ -58,18 +58,7 @@ int main() {
             scanAndPlan(&gm);
         }
 
-        int status = read(gm.fd_input, &buf, 4);
-        if (status != 0) {
-            buf[4] = '\0';
-            printf("Read msg: %s\n", buf);
-
-            size_t robot_i = buf[0] - '0';
-            size_t robot_j = buf[2] - '0';
-
-            recoverRobotAndStorage(&gm, robot_i, robot_j);
-            gm.free_robots++;
-            printGrid(&gm);
-        }
+        readAndRecover(&gm);
     }
     
     

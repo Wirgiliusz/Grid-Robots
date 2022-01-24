@@ -26,5 +26,4 @@ int readInputData(struct GridManager *gm, const char *file_name);
 
 void printGrid(struct GridManager *gm);
 int scanAndPlan(struct GridManager *gm);
-char* planPath(struct GridManager *gm);
-void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j);
+int readAndRecover(struct GridManager *gm);

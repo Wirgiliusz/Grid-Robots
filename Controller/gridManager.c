@@ -20,6 +20,8 @@ static void addGridSizeMessege(struct GridManager *gm);
 static void addRobotsPointsMessege(struct GridManager *gm, size_t robot_position_i, size_t robot_position_j, size_t msg_idx);
 static void addItemsPointsMessege(struct GridManager *gm, size_t item_position_i, size_t item_position_j, size_t msg_idx);
 static void addStoragesPointsMessege(struct GridManager *gm, size_t storage_position_i, size_t storage_position_j, size_t msg_idx);
+static char* planPath(struct GridManager *gm);
+static void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j);
 
 
 int readInputData(struct GridManager *gm, const char *file_name) {
@@ -204,36 +206,7 @@ static void addStoragesPointsMessege(struct GridManager *gm, size_t storage_posi
     gm->msg_storages_points[msg_idx + 3] = ' ';
 }
 
-void printGrid(struct GridManager *gm) {
-    for (size_t j=0; j<gm->grid_size_j; j++) {
-        for (size_t i=0; i<gm->grid_size_i; i++) {
-            printf("%c ", gm->grid[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-int scanAndPlan(struct GridManager *gm) {
-    const char* msg_path = planPath(gm);
-    if (msg_path) {
-        gm->free_robots--;
-        printf("Movement path msg: %s", msg_path);
-
-        gm->fd_output = open(gm->fifo_output_path, O_WRONLY);
-        write(gm->fd_output, msg_path, strlen(msg_path));
-        close(gm->fd_output);
-
-        free((void *)msg_path);
-
-        printGrid(gm);
-
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-char* planPath(struct GridManager *gm) {
+static char* planPath(struct GridManager *gm) {
     size_t robot_i = 99;
     size_t robot_j = 99;
     size_t item_i = 99;
@@ -275,7 +248,57 @@ char* planPath(struct GridManager *gm) {
     }
 }
 
-void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j) {
+static void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j) {
     gm->grid[robot_i][robot_j] = '0';
     gm->grid[robot_i + 1][robot_j] = 'S';
 }
+
+void printGrid(struct GridManager *gm) {
+    for (size_t j=0; j<gm->grid_size_j; j++) {
+        for (size_t i=0; i<gm->grid_size_i; i++) {
+            printf("%c ", gm->grid[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int scanAndPlan(struct GridManager *gm) {
+    const char* msg_path = planPath(gm);
+    if (msg_path) {
+        gm->free_robots--;
+        printf("Movement path msg: %s", msg_path);
+
+        gm->fd_output = open(gm->fifo_output_path, O_WRONLY);
+        write(gm->fd_output, msg_path, strlen(msg_path));
+        close(gm->fd_output);
+
+        free((void *)msg_path);
+
+        printGrid(gm);
+
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int readAndRecover(struct GridManager *gm) {
+    char buf[1024];
+    int status = read(gm->fd_input, &buf, 4);
+    if (status != 0) {
+        buf[4] = '\0';
+        printf("Read msg: %s\n", buf);
+
+        size_t robot_i = buf[0] - '0';
+        size_t robot_j = buf[2] - '0';
+
+        recoverRobotAndStorage(gm, robot_i, robot_j);
+        gm->free_robots++;
+        printGrid(gm);
+
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
