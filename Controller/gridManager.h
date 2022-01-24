@@ -29,3 +29,5 @@ int writeInputData(struct GridManager *gm);
 void printGrid(struct GridManager *gm);
 int scanAndPlan(struct GridManager *gm);
 int readAndRecover(struct GridManager *gm);
+
+void cleanUp(struct GridManager *gm);

@@ -44,8 +44,8 @@ char* constructPath(size_t x_0, size_t y_0, size_t x_f, size_t y_f) {
 }
 
 char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, size_t x_p, size_t y_p) {
-    char *path_to_point = malloc(sizeof(char)*1024);
-    char *path_from_point = malloc(sizeof(char)*1024);
+    char *path_to_point;
+    char *path_from_point;
 
     path_to_point = constructPath(x_0, y_0, x_p, y_p);
     size_t path_len = strlen(path_to_point);
@@ -59,6 +59,7 @@ char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, 
 
     strncat(path_to_point, path_from_point, strlen(path_from_point));
 
+    free(path_from_point);
     return path_to_point;
 }
 

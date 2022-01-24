@@ -34,11 +34,7 @@ int main() {
         readAndRecover(&gm);
     }
     
+    cleanUp(&gm);
     
-    printf("[OUTPUT] FIFO closed\n");
-
-    close(gm.fd_input);
-    printf("[INPUT] FIFO closed\n");
-
     return EXIT_SUCCESS;
 }

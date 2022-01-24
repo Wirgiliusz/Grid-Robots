@@ -73,6 +73,7 @@ int writeInputData(struct GridManager *gm) {
     printf("Robots points msg: %s", gm->msg_robots_points);
     write(gm->fd_output, gm->msg_robots_points, strlen(gm->msg_robots_points));
 
+    printf("[OUTPUT] FIFO closed\n");
     close(gm->fd_output);
 
     return readConfirmation(gm);
@@ -297,7 +298,7 @@ static char* planPath(struct GridManager *gm) {
 }
 
 static void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_t robot_j) {
-    gm->grid[robot_i][robot_j] = '0';
+    gm->grid[robot_i][robot_j] = gm->free_robots + '0';
     gm->grid[robot_i + 1][robot_j] = 'S';
 }
 
@@ -350,3 +351,12 @@ int readAndRecover(struct GridManager *gm) {
     }
 }
 
+void cleanUp(struct GridManager *gm) {
+    close(gm->fd_input);
+    printf("[INPUT] FIFO closed\n");
+
+    for (size_t i=0; i<gm->grid_size_i; i++) {
+        free(gm->grid[i]);
+    }
+    free(gm->grid);
+}
