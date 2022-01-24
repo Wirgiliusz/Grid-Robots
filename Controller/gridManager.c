@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 static int openFile(struct GridManager *gm, const char *file_name);
@@ -208,6 +210,26 @@ void printGrid(struct GridManager *gm) {
             printf("%c ", gm->grid[i][j]);
         }
         printf("\n");
+    }
+}
+
+int scanAndPlan(struct GridManager *gm) {
+    const char* msg_path = planPath(gm);
+    if (msg_path) {
+        gm->free_robots--;
+        printf("Movement path msg: %s", msg_path);
+
+        gm->fd_output = open(gm->fifo_output_path, O_WRONLY);
+        write(gm->fd_output, msg_path, strlen(msg_path));
+        close(gm->fd_output);
+
+        free((void *)msg_path);
+
+        printGrid(gm);
+
+        return 1;
+    } else {
+        return 0;
     }
 }
 
