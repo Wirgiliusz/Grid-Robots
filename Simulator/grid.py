@@ -117,7 +117,8 @@ class Grid:
         dest_i = destination_coord[0]
         dest_j = destination_coord[1]
         robot = self.robots_grid[robot_i][robot_j]
-        if robot:
+        robot_on_dest = self.robots_grid[dest_i][dest_j]
+        if robot and not robot_on_dest:
             if not robot.movement:
                 robot.moveToCoord(dest_i, dest_j)
                 self.robots_grid[dest_i][dest_j] = self.robots_grid[robot_i][robot_j]
