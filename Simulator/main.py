@@ -7,9 +7,9 @@ import signal
 from grid import Grid
 
 
-
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (-15,0)
 pygame.init()
-screen = pygame.display.set_mode((1600, 900))
+screen = pygame.display.set_mode((970, 1020))
 screen.fill((48, 46, 46))
 
 
@@ -22,10 +22,9 @@ print("[OUTPUT] FIFO opened")
 
 paths = []
 def readPaths():
-    print("Reading messages from [INPUT] FIFO:")
-
     path_data = fifo_input.readline()
     if len(path_data) > 1:
+        print("-> Reading messages from [INPUT] FIFO:")
         path_points = path_data.split(" ")
         if len(path_points) > 1:
             path_coordinates = []
@@ -33,23 +32,22 @@ def readPaths():
                 x = int(path_points[i])
                 y = int(path_points[i+1])
                 path_coordinates.append((x,y))
-            print("Path msg: ", path_coordinates)
+            print("Path msg: ", path_coordinates, "\n")
             paths.append(path_coordinates)
 
 def sendFinishMessage(robot_coordinates):
     robot_x = robot_coordinates[0]
     robot_y = robot_coordinates[1]
     fifo_output = open(fifo_output_path, 'w')
-    print("[OUTPUT] FIFO opened") 
 
-    print("Sending messages to [OUTPUT] FIFO:")
     message = str(robot_x) + " " + str(robot_y) + "\n"
+    print("<- Sending messages to [OUTPUT] FIFO: ")
     fifo_output.write(message)
+    print("Robot finished: ", message)
 
     fifo_output.close()
-    print("[OUTPUT] FIFO closed") 
 
-print("Reading messages from [INPUT] FIFO:")
+print("-> Reading messages from [INPUT] FIFO:")
 
 data = fifo_input.readline()
 grid_size = data.split(" ")
@@ -88,8 +86,7 @@ robots_coordinates = tuple(robots_coordinates)
 print("Robots points msg: ", robots_coordinates)
 
 
-print("Sending messages to [OUTPUT] FIFO:")
-
+print("<- Sending messages to [OUTPUT] FIFO:")
 print("Acknowledge msg: success")
 fifo_output.write("success")
 
@@ -113,20 +110,15 @@ while True:
             
     if play:
         if grid.play_animations:
-            print("Robots movement")
             grid.updateRobotsPositions()
         else:
-            print("Robots stopped")
             if paths:
                 for path_coordinates in paths:
                     grid.checkRobotOnItem(path_coordinates[0])
                     grid.checkRobotOnStorage(path_coordinates[0])
 
                     if len(path_coordinates) > 1:
-                        print("Moving on path: ", path_coordinates)
-
                         moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
-                        print(moved)
                         if moved:
                             path_coordinates.pop(0)
                     else:

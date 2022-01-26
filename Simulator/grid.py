@@ -4,8 +4,8 @@ from item import Item
 from robot import Robot
 
 class Grid:
-    screen_size_x = 1600
-    screen_size_y = 900
+    screen_size_x = 970
+    screen_size_y = 1020
     cell_size = 100
     item_size = 40
 

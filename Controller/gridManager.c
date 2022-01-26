@@ -312,13 +312,15 @@ void printGrid(struct GridManager *gm) {
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 int scanAndPlan(struct GridManager *gm) {
     const char* msg_path = planPath(gm);
     if (msg_path) {
         gm->free_robots--;
-        printf("Movement path msg: %s", msg_path);
+        printf("<- Sending messages to [OUTPUT] FIFO:\n");
+        printf("Path msg: %s", msg_path);
 
         gm->fd_output = open(gm->fifo_output_path, O_WRONLY);
         write(gm->fd_output, msg_path, strlen(msg_path));
@@ -339,7 +341,8 @@ int readAndRecover(struct GridManager *gm) {
     int status = read(gm->fd_input, &buf, 4);
     if (status != 0) {
         buf[4] = '\0';
-        printf("Read msg: %s\n", buf);
+        printf("-> Reading messages from [INPUT] FIFO:\n");
+        printf("Robot finished: %s\n", buf);
 
         size_t robot_i = buf[0] - '0';
         size_t robot_j = buf[2] - '0';
