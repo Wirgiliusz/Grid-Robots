@@ -54,21 +54,27 @@ static void addPathMessage(char *path, size_t x, size_t y, size_t msg_idx) {
 }
 
 char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, size_t x_p, size_t y_p) {
+    char *path_start;
     char *path_to_point;
     char *path_from_point;
 
-    path_to_point = constructPath(x_0, y_0, x_p, y_p);
-    size_t path_len = strlen(path_to_point);
-    path_to_point[path_len - 5] = '\0';
+    path_start = constructPath(x_0, y_0, x_0, y_0 - 1);
+    path_start[strlen(path_start) - 5] = '\0';
+
+    path_to_point = constructPath(x_0, y_0 - 1, x_p, y_p);
+    path_to_point[strlen(path_to_point) - 5] = '\0';
+
+    strncat(path_start, path_to_point, strlen(path_to_point));
 
     path_from_point = constructPath(x_p, y_p, x_f, y_f);
-    path_len = strlen(path_from_point);
+    size_t path_len = strlen(path_from_point);
     addPathMessage(path_from_point, x_f - 1, y_f, path_len - 1);
     path_from_point[path_len + 3] = '\n';
     path_from_point[path_len + 4] = '\0';
 
-    strncat(path_to_point, path_from_point, strlen(path_from_point));
+    strncat(path_start, path_from_point, strlen(path_from_point));
 
+    free(path_to_point);
     free(path_from_point);
-    return path_to_point;
+    return path_start;
 }
