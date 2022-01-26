@@ -103,47 +103,38 @@ grid = Grid(screen, grid_size_x, grid_size_y,
 (robots_coordinates))
 grid.drawGrid()
 
-
+play = False
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             sys.exit()
         elif event.type == KEYDOWN:
-            if event.key == pygame.K_w:
-                print("W pressed")
-                grid.moveRobot("N")
-            if event.key == pygame.K_s:
-                print("S pressed")
-                grid.moveRobot("S")
-            if event.key == pygame.K_a:
-                print("A pressed")
-                grid.moveRobot("W")
-            if event.key == pygame.K_d:
-                print("D pressed")
-                grid.moveRobot("E")
+            play = True
+            
+    if play:
+        if grid.play_animations:
+            print("Robots movement")
+            grid.updateRobotsPositions()
+        else:
+            print("Robots stopped")
+            if paths:
+                for path_coordinates in paths:
+                    grid.checkRobotOnItem(path_coordinates[0])
+                    grid.checkRobotOnStorage(path_coordinates[0])
 
-    if grid.play_animations:
-        print("Robots movement")
-        grid.updateRobotsPositions()
-    else:
-        print("Robots stopped")
-        if paths:
-            for path_coordinates in paths:
-                grid.checkRobotOnItem(path_coordinates[0])
-                grid.checkRobotOnStorage(path_coordinates[0])
+                    if len(path_coordinates) > 1:
+                        print("Moving on path: ", path_coordinates)
 
-                if len(path_coordinates) > 1:
-                    print("Moving on path: ", path_coordinates)
+                        moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
+                        print(moved)
+                        if moved:
+                            path_coordinates.pop(0)
+                    else:
+                        sendFinishMessage(path_coordinates[0])
+                        paths.remove(path_coordinates)
 
-                    moved = grid.moveRobotFromCoordToCoord(path_coordinates[0], path_coordinates[1])
-                    print(moved)
-                    if moved:
-                        path_coordinates.pop(0)
-                else:
-                    sendFinishMessage(path_coordinates[0])
-                    paths.remove(path_coordinates)
+        readPaths()
 
-    readPaths()
     pygame.display.update()
     pygame.time.delay(1)
 
