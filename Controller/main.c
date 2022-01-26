@@ -42,7 +42,7 @@ int main() {
 
         robot_released = readAndRecover(&gm);
         if (robot_released) {
-
+            switchState(state, ROBOT_RELEASED);
         }
     }
     
