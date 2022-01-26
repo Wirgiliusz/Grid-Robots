@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* constructPath(size_t x_0, size_t y_0, size_t x_f, size_t y_f) {
+static char* constructPath(size_t x_0, size_t y_0, size_t x_f, size_t y_f);
+static void addPathMessage(char *path, size_t x, size_t y, size_t msg_idx);
+
+static char* constructPath(size_t x_0, size_t y_0, size_t x_f, size_t y_f) {
     size_t x_t = x_0;
     size_t y_t = y_0;
     size_t i = 0;
@@ -43,6 +46,13 @@ char* constructPath(size_t x_0, size_t y_0, size_t x_f, size_t y_f) {
     return path;
 }
 
+static void addPathMessage(char *path, size_t x, size_t y, size_t msg_idx) {
+    path[msg_idx] = x + '0';
+    path[msg_idx + 1] = ' ';
+    path[msg_idx + 2] = y + '0';
+    path[msg_idx + 3] = ' ';
+}
+
 char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, size_t x_p, size_t y_p) {
     char *path_to_point;
     char *path_from_point;
@@ -61,11 +71,4 @@ char* constructPathThroughPoint(size_t x_0, size_t y_0, size_t x_f, size_t y_f, 
 
     free(path_from_point);
     return path_to_point;
-}
-
-void addPathMessage(char *path, size_t x, size_t y, size_t msg_idx) {
-    path[msg_idx] = x + '0';
-    path[msg_idx + 1] = ' ';
-    path[msg_idx + 2] = y + '0';
-    path[msg_idx + 3] = ' ';
 }
