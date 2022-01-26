@@ -133,7 +133,7 @@ class Grid:
         robot_j = robot_coord[1]
 
         if self.items_grid[robot_i][robot_j]:
-            self.robots_grid[robot_i][robot_j].changeImage(True)
+            self.robots_grid[robot_i][robot_j].changeImage(True, self.items_grid[robot_i][robot_j].img_idx)
             self.items_grid[robot_i][robot_j] = 0
             self.drawGrid()
 
@@ -142,6 +142,6 @@ class Grid:
         robot_j = robot_coord[1]
 
         if isinstance(self.grid[robot_i][robot_j], Storage) and isinstance(self.robots_grid[robot_i][robot_j], Robot):
-            self.robots_grid[robot_i][robot_j].changeImage(False)
+            self.robots_grid[robot_i][robot_j].changeImage(False, 0)
             self.drawGrid()
             return True
