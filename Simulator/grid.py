@@ -15,16 +15,16 @@ class Grid:
 
     play_animations = False
 
-    def __init__(self, screen, x, y, 
+    def __init__(self, screen, grid_coordinates, 
     storages_coordinates, 
     items_coordinates, 
     robot_coordinates) -> None:
         self.screen = screen
-        self.x = x
-        self.y = y
+        self.x = grid_coordinates[0]
+        self.y = grid_coordinates[1]
 
-        self.offset_x = int((self.screen_size_x - x*self.cell_size)/2)
-        self.offset_y = int((self.screen_size_y - y*self.cell_size)/2)
+        self.offset_x = int((self.screen_size_x - self.x*self.cell_size)/2)
+        self.offset_y = int((self.screen_size_y - self.y*self.cell_size)/2)
 
         for i in range(self.x):
             tmp = []

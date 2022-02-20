@@ -6,21 +6,6 @@ import signal
 
 from grid import Grid
 
-
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (-15,0)
-pygame.init()
-screen = pygame.display.set_mode((970, 1020))
-screen.fill((48, 46, 46))
-
-
-fifo_input_path = "/tmp/myfifo_c2p"
-fifo_input = open(fifo_input_path, 'r')
-print("[INPUT] FIFO opened") 
-fifo_output_path = "/tmp/myfifo_p2c"
-fifo_output = open(fifo_output_path, 'w')
-print("[OUTPUT] FIFO opened") 
-
-paths = []
 def readPaths():
     path_data = fifo_input.readline()
     if len(path_data) > 1:
@@ -47,44 +32,73 @@ def sendFinishMessage(robot_coordinates):
 
     fifo_output.close()
 
+def readGrid(fifo_input):
+    data = fifo_input.readline()
+    grid_size = data.split(" ")
+    grid_coordinates = []
+    grid_coordinates.append(int(grid_size[0]))
+    grid_coordinates.append(int(grid_size[1]))
+    grid_coordinates = tuple(grid_coordinates)
+    print("Grid size msg: ", grid_coordinates)
+
+    return grid_coordinates
+
+def readStorages(fifo_input):
+    data = fifo_input.readline()
+    storages_points = data.split(" ")
+    storages_coordinates = []
+    for i in range(0, len(storages_points)-1, 2):
+        x = int(storages_points[i])
+        y = int(storages_points[i+1])
+        storages_coordinates.append((x,y))
+    storages_coordinates = tuple(storages_coordinates)
+    print("Storages points msg: ", storages_coordinates)
+
+    return storages_coordinates
+
+def readItems(fifo_input):
+    data = fifo_input.readline()
+    items_points = data.split(" ")
+    items_coordinates = []
+    for i in range(0, len(items_points)-1, 2):
+        x = int(items_points[i])
+        y = int(items_points[i+1])
+        items_coordinates.append((x,y))
+    items_coordinates = tuple(items_coordinates)
+    print("Items points msg: ", items_coordinates)
+
+    return items_coordinates
+
+def readRobots(fifo_input):
+    data = fifo_input.readline()
+    robots_points = data.split(" ")
+    robots_coordinates = []
+    for i in range(0, len(robots_points)-1, 2):
+        x = int(robots_points[i])
+        y = int(robots_points[i+1])
+        robots_coordinates.append((x,y))
+    robots_coordinates = tuple(robots_coordinates)
+    print("Robots points msg: ", robots_coordinates)
+
+    return robots_coordinates
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (-15,0)
+pygame.init()
+screen = pygame.display.set_mode((970, 1020))
+screen.fill((48, 46, 46))
+
+fifo_input_path = "/tmp/myfifo_c2p"
+fifo_input = open(fifo_input_path, 'r')
+print("[INPUT] FIFO opened") 
+fifo_output_path = "/tmp/myfifo_p2c"
+fifo_output = open(fifo_output_path, 'w')
+print("[OUTPUT] FIFO opened") 
+
 print("-> Reading messages from [INPUT] FIFO:")
-
-data = fifo_input.readline()
-grid_size = data.split(" ")
-grid_size_x = int(grid_size[0])
-grid_size_y = int(grid_size[1])
-print("Grid size msg: ", grid_size_x, " ", grid_size_y)
-
-data = fifo_input.readline()
-storages_points = data.split(" ")
-storages_coordinates = []
-for i in range(0, len(storages_points)-1, 2):
-    x = int(storages_points[i])
-    y = int(storages_points[i+1])
-    storages_coordinates.append((x,y))
-storages_coordinates = tuple(storages_coordinates)
-print("Storages points msg: ", storages_coordinates)
-
-data = fifo_input.readline()
-items_points = data.split(" ")
-items_coordinates = []
-for i in range(0, len(items_points)-1, 2):
-    x = int(items_points[i])
-    y = int(items_points[i+1])
-    items_coordinates.append((x,y))
-items_coordinates = tuple(items_coordinates)
-print("Items points msg: ", items_coordinates)
-
-data = fifo_input.readline()
-robots_points = data.split(" ")
-robots_coordinates = []
-for i in range(0, len(robots_points)-1, 2):
-    x = int(robots_points[i])
-    y = int(robots_points[i+1])
-    robots_coordinates.append((x,y))
-robots_coordinates = tuple(robots_coordinates)
-print("Robots points msg: ", robots_coordinates)
-
+grid_coordinates = readGrid(fifo_input)
+storages_coordinates = readStorages(fifo_input)
+items_coordinates = readItems(fifo_input)
+robots_coordinates = readRobots(fifo_input)
 
 print("<- Sending messages to [OUTPUT] FIFO:")
 print("Acknowledge msg: success")
@@ -94,11 +108,9 @@ fifo_output.close()
 print("[OUTPUT] FIFO closed") 
 
 
-grid = Grid(screen, grid_size_x, grid_size_y, 
-(storages_coordinates), 
-(items_coordinates),
-(robots_coordinates))
+grid = Grid(screen, grid_coordinates, storages_coordinates, items_coordinates, robots_coordinates)
 grid.drawGrid()
+paths = []
 
 play = False
 while True:
