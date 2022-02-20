@@ -3,3 +3,4 @@
 /.vscode
 /Controller/*.exe
 /Controller/*.out
+/Controller/obj
