@@ -14,12 +14,18 @@ enum Events {ROBOT_ENGAGED, ROBOT_RELEASED};
 
 enum States switchState(enum States current_state, enum Events event);
 
-int main() {
+int main(int argc, char **argv) {
     printf("Hello Controller!\n");
     state = ALL_ROBOTS_FREE;
 
+    if (argc < 2) {
+        printf("Missing argument with file name!\n");
+        return EXIT_FAILURE;
+    }
+
+    char *input_file_name = argv[1];
     struct GridManager gm;
-    if (readInputData(&gm, "input.txt") == -1) {
+    if (readInputData(&gm, input_file_name) == -1) {
         perror("File opening failed");
         return EXIT_FAILURE;
     }
