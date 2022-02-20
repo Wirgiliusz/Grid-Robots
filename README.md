@@ -21,9 +21,10 @@ The communication between two programs is based on FIFOs.
 ---
 
 ## Results
-
 The Grid Robots project consists of two parts:
 1. The simulation and visualisation part written in Python and pygame module ([Simulator directory](/Simulator))
 2. The event-based controller part written in C ([Controller directory](/Controller))
+<img src=/docs/imgs/grid_robots.png width="700">
 
 ### Working simulation
+<img src=/docs/imgs/grid_robots_gif.gif width="700">
