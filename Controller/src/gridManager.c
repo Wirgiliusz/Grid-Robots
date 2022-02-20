@@ -29,7 +29,7 @@ static void recoverRobotAndStorage(struct GridManager *gm, size_t robot_i, size_
 
 int readInputData(struct GridManager *gm, const char *file_name) {
     gm->free_robots = 0;
-    
+
     if(!openFile(gm, file_name)) {
         perror("File opening failed");
         return -1;
@@ -95,7 +95,22 @@ static int readConfirmation(struct GridManager *gm) {
 }
 
 static int openFile(struct GridManager *gm, const char *file_name) {
-    gm->file = fopen(file_name, "r");
+    if (strncmp(file_name, "input_data/", 11) == 0) {
+        gm->file = fopen(file_name, "r");
+    } else {
+        char input_file_path[64];
+        strncpy(input_file_path, "input_data/", 64);
+        if (64 - 11 < strlen(file_name)) {
+            perror("File name too long!");
+            return -1;
+        }
+        strncat(input_file_path, file_name, 64-11);
+        printf("Opening file: %s\n", input_file_path);
+
+        gm->file = fopen(input_file_path, "r");
+    }
+
+    
     if (!gm->file) {
         perror("File opening failed");
         return 0;
