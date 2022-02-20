@@ -128,7 +128,7 @@ while True:
         readPaths()
 
     pygame.display.update()
-    pygame.time.delay(1)
+    pygame.time.delay(15)
 
 fifo_input.close()
 print("[INPUT] FIFO closed") 
