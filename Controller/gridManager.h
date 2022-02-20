@@ -19,6 +19,7 @@ struct GridManager {
     const char *fifo_output_path;
     const char *fifo_input_path;
 
+    size_t max_robots;
     size_t free_robots;
 };
 

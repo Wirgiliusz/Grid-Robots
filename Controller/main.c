@@ -9,10 +9,12 @@
 #include "pathPlanner.h"
 
 
-enum States {ALL_ROBOTS_FREE, TWO_ROBOTS_FREE, ONE_ROBOT_FREE, ALL_ROBOTS_BUSY} state;
+enum States {ALL_ROBOTS_FREE, SOME_ROBOTS_FREE, ALL_ROBOTS_BUSY} state;
 enum Events {ROBOT_ENGAGED, ROBOT_RELEASED};
 
 enum States switchState(enum States current_state, enum Events event);
+
+static struct GridManager gm;
 
 int main(int argc, char **argv) {
     printf("Hello Controller!\n");
@@ -24,7 +26,6 @@ int main(int argc, char **argv) {
     }
 
     char *input_file_name = argv[1];
-    struct GridManager gm;
     if (readInputData(&gm, input_file_name) == -1) {
         perror("File opening failed");
         return EXIT_FAILURE;
@@ -36,24 +37,27 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     
-    int robot_engaged = 0;
-    int robot_released = 0;
     while(1) {
-        if (gm.free_robots) {
-            robot_engaged = scanAndPlan(&gm);
-            if (robot_engaged) {
-                switchState(state, ROBOT_ENGAGED);
-            }
-        }
-
-        robot_released = readAndRecover(&gm);
-        if (robot_released) {
-            switchState(state, ROBOT_RELEASED);
+        switch (state) {
+            case ALL_ROBOTS_FREE:
+                if (scanAndPlan(&gm)) {
+                    state = switchState(state, ROBOT_ENGAGED);
+                }
+                break;
+            case SOME_ROBOTS_FREE:
+                if (scanAndPlan(&gm)) {
+                    state = switchState(state, ROBOT_ENGAGED);
+                }
+                break;
+            case ALL_ROBOTS_BUSY:
+                if (readAndRecover(&gm)) {
+                    state = switchState(state, ROBOT_RELEASED);
+                }
+                break;
         }
     }
     
     cleanUp(&gm);
-    
     return EXIT_SUCCESS;
 }
 
@@ -61,35 +65,36 @@ enum States switchState(enum States current_state, enum Events event) {
     switch (current_state) {
         case ALL_ROBOTS_FREE:
             if (event == ROBOT_ENGAGED) {
-                return TWO_ROBOTS_FREE;
+                return SOME_ROBOTS_FREE;
             } else if (event == ROBOT_RELEASED) {
-                return event;
+                return current_state;
             }
             break;
-        case TWO_ROBOTS_FREE:
+        case SOME_ROBOTS_FREE:
             if (event == ROBOT_ENGAGED) {
-                return ONE_ROBOT_FREE;
+                if (gm.free_robots == 0) {
+                    return ALL_ROBOTS_BUSY;
+                } else {
+                    return current_state;
+                }  
             } else if (event == ROBOT_RELEASED) {
-                return ALL_ROBOTS_FREE;
-            }
-            break;
-        case ONE_ROBOT_FREE:
-            if (event == ROBOT_ENGAGED) {
-                return ALL_ROBOTS_BUSY;
-            } else if (event == ROBOT_RELEASED) {
-                return TWO_ROBOTS_FREE;
+                if (gm.free_robots == gm.max_robots) {
+                    return ALL_ROBOTS_FREE;
+                } else {
+                    return current_state;
+                }
             }
             break;
         case ALL_ROBOTS_BUSY:
             if (event == ROBOT_ENGAGED) {
-                return event;
+                return current_state;
             } else if (event == ROBOT_RELEASED) {
-                return ONE_ROBOT_FREE;
+                return SOME_ROBOTS_FREE;
             }
             break;
         default:
             return current_state;
     }   
 
-    return event;
+    return current_state;
 }

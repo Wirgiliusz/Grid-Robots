@@ -195,6 +195,8 @@ static void readAndAddRobots(struct GridManager *gm) {
         robot_number++;
         gm->free_robots++;
     }
+
+    gm->max_robots = gm->free_robots;
 }
 
 static void constructMessages(struct GridManager *gm) {
